@@ -143,6 +143,9 @@ const objectHeights = {
   shower: 6.6,
   kitchen_sink: 2.85,
 };
+
+// Floor-to-floor height used when stacking multiple floors in the 3D twin.
+const STORY_HEIGHT = 10;
 const clip = new THREE.Plane(new THREE.Vector3(0, -1, 0), 2.65);
 const textures = new Set();
 function texture(kind, width = 4, height = 4) {
@@ -482,10 +485,28 @@ function wallSegments(rooms) {
 
 function bounds() {
   const b = new THREE.Box3();
-  (layoutRef?.rooms || []).forEach((r) => {
-    b.expandByPoint(new THREE.Vector3(r.x, 0, r.y));
-    b.expandByPoint(new THREE.Vector3(r.x + r.width, 7.2, r.y + r.height));
+  const floorPlans = layoutRef?.floor_plans || [
+    { rooms: layoutRef?.rooms || [] },
+  ];
+  floorPlans.forEach((plan, fi) => {
+    const yOff = fi * STORY_HEIGHT;
+    (plan.rooms || []).forEach((r) => {
+      b.expandByPoint(new THREE.Vector3(r.x, yOff, r.y));
+      b.expandByPoint(
+        new THREE.Vector3(r.x + r.width, yOff + 7.2, r.y + r.height),
+      );
+    });
   });
+  // top of the highest stair flight
+  if (layoutRef?.floors && layoutRef.floors > 1) {
+    b.expandByPoint(
+      new THREE.Vector3(
+        0,
+        (layoutRef.floors - 1) * STORY_HEIGHT + 7.2,
+        0,
+      ),
+    );
+  }
   return b.isEmpty()
     ? new THREE.Box3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(40, 7.2, 40))
     : b;
@@ -558,37 +579,51 @@ function buildFromLayout(layout, opts = {}) {
   );
   const style = opts.style || layout.metadata?.style || "modern",
     apertures = [];
-  (layout.rooms || []).forEach((r) => {
-    const kind =
-      r.type === "bedroom" || style === "traditional"
-        ? "wood"
-        : r.type === "bathroom" || r.type === "balcony"
-          ? "tile"
-          : "stone";
-    const mat = material(
-      kind === "wood" ? "#eee2d0" : "#f4f5f3",
-      kind === "wood" ? 0.65 : 0.78,
-      { map: texture(kind, r.width, r.height), envMapIntensity: 0.2 },
-    );
-    const floor = box(
-      floors,
-      r.width,
-      0.18,
-      r.height,
-      r.x + r.width / 2,
-      -0.09,
-      r.y + r.height / 2,
-      mat,
-    );
-    floor.userData.room = r;
-    floor.castShadow = false;
-    [
-      ...(r.doors || []).map((o) => ({ ...o, kind: "door" })),
-      ...(r.windows || []).map((o) => ({ ...o, kind: "window" })),
+  const floorPlans = layout.floor_plans || [
+    {
+      rooms: layout.rooms || [],
+      furniture: layout.furniture || [],
+      lighting: layout.lighting || [],
+      plumbing_fixtures: layout.plumbing_fixtures || [],
+      plumbing_routes: layout.plumbing_routes || [],
+    },
+  ];
+  floorPlans.forEach((plan, fi) => {
+    const yOff = fi * STORY_HEIGHT;
+    (plan.rooms || []).forEach((r) => {
+      const kind =
+        r.type === "bedroom" || style === "traditional"
+          ? "wood"
+          : r.type === "bathroom" || r.type === "balcony"
+            ? "tile"
+            : r.type === "staircase"
+              ? "tile"
+              : "stone";
+      const mat = material(
+        kind === "wood" ? "#eee2d0" : "#f4f5f3",
+        kind === "wood" ? 0.65 : 0.78,
+        { map: texture(kind, r.width, r.height), envMapIntensity: 0.2 },
+      );
+      const floor = box(
+        floors,
+        r.width,
+        0.18,
+        r.height,
+        r.x + r.width / 2,
+        yOff - 0.09,
+        r.y + r.height / 2,
+        mat,
+      );
+      floor.userData = { room: r, floor: fi, isFloor: true, baseColor: mat.color.clone() };
+      floor.castShadow = false;
+      [
+        ...(r.doors || []).map((o) => ({ ...o, kind: "door" })),
+        ...(r.windows || []).map((o) => ({ ...o, kind: "window" })),
     ].forEach((o) => {
       const a = openingPosition(r, o);
-      if (a) apertures.push(a);
+      if (a) apertures.push({ ...a, yOff });
     });
+  });
   });
   const b = bounds(),
     size = b.getSize(new THREE.Vector3()),
@@ -611,7 +646,13 @@ function buildFromLayout(layout, opts = {}) {
   });
   const exterior = plaster.clone();
   exterior.color.set(palette.exterior);
-  wallSegments(layout.rooms || []).forEach((s) => {
+  const allWallSegments = [];
+  floorPlans.forEach((plan, fi) => {
+    wallSegments(plan.rooms || []).forEach((s) =>
+      allWallSegments.push({ ...s, yOff: fi * STORY_HEIGHT }),
+    );
+  });
+  allWallSegments.forEach((s) => {
     const t = s.exterior ? 0.45 : 0.3,
       h = s.balcony && s.exterior ? 3.2 : 7.2;
     const cuts = apertures
@@ -631,7 +672,7 @@ function buildFromLayout(layout, opts = {}) {
         y1 - y0,
         s.h ? t : hi - lo,
         s.h ? (lo + hi) / 2 : s.at,
-        (y0 + y1) / 2,
+        (y0 + y1) / 2 + s.yOff,
         s.h ? s.at : (lo + hi) / 2,
         s.exterior ? exterior : plaster,
       );
@@ -666,7 +707,7 @@ function buildFromLayout(layout, opts = {}) {
     const g = new THREE.Group();
     g.position.set(
       a.h ? (a.a + a.b) / 2 : a.at,
-      0,
+      a.yOff || 0,
       a.h ? a.at : (a.a + a.b) / 2,
     );
     if (!a.h) g.rotation.y = Math.PI / 2;
@@ -717,54 +758,84 @@ function buildFromLayout(layout, opts = {}) {
       );
     }
   });
-  (layout.furniture || []).forEach((f) => addAsset(f, furniture, token));
-  (layout.plumbing_fixtures || []).forEach((f) =>
-    addAsset(
-      {
-        ...f,
-        x: f.x - (f.width || 1.8) / 2,
-        y: f.y - (f.height || 1.8) / 2,
-        width: f.width || 1.8,
-        height: f.height || 1.8,
-      },
-      plumbing,
-      token,
-    ),
-  );
-  (layout.lighting || []).forEach((l, i) => {
-    const y = l.type === "pendant_light" ? 5.8 : 6.9;
-    const lamp = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.22, 0.28, 0.12, 12),
-      material("#fff3d6", 0.4, { emissive: "#ffdca6", emissiveIntensity: 0.6 }),
-    );
-    lamp.position.set(l.x, y, l.y);
-    markers.add(lamp);
-    if (i < 8) {
-      const p = new THREE.PointLight("#fff0d4", 35, 22, 2);
-      p.position.set(l.x, 5.8, l.y);
-      illumination.add(p);
-    }
-  });
-  (layout.plumbing_routes || []).forEach((rt) => {
-    const pts = rt.path || [];
-    for (let i = 1; i < pts.length; i++) {
-      const a = pts[i - 1],
-        b = pts[i],
-        len = Math.hypot(b[0] - a[0], b[1] - a[1]);
-      if (len < 0.01) continue;
-      const m = box(
+  floorPlans.forEach((plan, fi) => {
+    const yOff = fi * STORY_HEIGHT;
+    (plan.furniture || []).forEach((f) => addAsset(f, furniture, token, yOff));
+    (plan.plumbing_fixtures || []).forEach((f) =>
+      addAsset(
+        {
+          ...f,
+          x: f.x - (f.width || 1.8) / 2,
+          y: f.y - (f.height || 1.8) / 2,
+          width: f.width || 1.8,
+          height: f.height || 1.8,
+        },
         plumbing,
-        len,
-        0.08,
-        0.08,
-        (a[0] + b[0]) / 2,
-        0.06,
-        (a[1] + b[1]) / 2,
-        material(rt.kind === "drainage" ? "#997bc0" : "#4aabc6"),
+        token,
+        yOff,
+      ),
+    );
+    (plan.lighting || []).forEach((l, i) => {
+      const y = l.type === "pendant_light" ? 5.8 : 6.9;
+      const lamp = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.22, 0.28, 0.12, 12),
+        material("#fff3d6", 0.4, { emissive: "#ffdca6", emissiveIntensity: 0.6 }),
       );
-      m.rotation.y = -Math.atan2(b[1] - a[1], b[0] - a[0]);
-    }
+      lamp.position.set(l.x, y + yOff, l.y);
+      markers.add(lamp);
+      if (i < 8) {
+        const p = new THREE.PointLight("#fff0d4", 35, 22, 2);
+        p.position.set(l.x, 5.8 + yOff, l.y);
+        illumination.add(p);
+      }
+    });
+    (plan.plumbing_routes || []).forEach((rt) => {
+      const pts = rt.path || [];
+      for (let i = 1; i < pts.length; i++) {
+        const a = pts[i - 1],
+          b = pts[i],
+          len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+        if (len < 0.01) continue;
+        const m = box(
+          plumbing,
+          len,
+          0.08,
+          0.08,
+          (a[0] + b[0]) / 2,
+          0.06 + yOff,
+          (a[1] + b[1]) / 2,
+          material(rt.kind === "drainage" ? "#997bc0" : "#4aabc6"),
+        );
+        m.rotation.y = -Math.atan2(b[1] - a[1], b[0] - a[0]);
+      }
+    });
   });
+
+  // Realistic 3D staircase connecting all floors, aligned with the reserved
+  // staircase footprint on every floor plan.
+  if (layout.staircase && layout.floors && layout.floors > 1) {
+    const s = layout.staircase;
+    const stairs = new THREE.Group();
+    const stairMat = material("#b9a98a", 0.5);
+    const rise = STORY_HEIGHT / 14;
+    const tread = s.height / 14;
+    for (let f = 0; f < layout.floors - 1; f++) {
+      for (let k = 0; k < 14; k++) {
+        box(
+          stairs,
+          s.width,
+          rise,
+          tread,
+          s.x + s.width / 2,
+          f * STORY_HEIGHT + k * rise + rise / 2,
+          s.y + k * tread + tread / 2,
+          stairMat,
+        );
+      }
+    }
+    model.add(stairs);
+  }
+
   walls.visible = visibility.walls;
   openings.visible = visibility.walls;
   furniture.visible = visibility.furniture;
@@ -781,7 +852,7 @@ function buildFromLayout(layout, opts = {}) {
   resetCamera();
   updateLighting(1);
 }
-async function addAsset(f, target, token) {
+async function addAsset(f, target, token, yOff = 0) {
   const name = modelNames[f.type];
   if (!name || !(f.width > 0 && f.height > 0)) return;
   try {
@@ -815,7 +886,7 @@ async function addAsset(f, target, token) {
     );
     o.position.set(
       f.x - b.min.x * o.scale.x,
-      -b.min.y * o.scale.y,
+      -b.min.y * o.scale.y + yOff,
       f.y - b.min.z * o.scale.z,
     );
     o.userData.source = { ...f };
@@ -835,7 +906,14 @@ function selectRoom(id) {
   if (!selection) return;
   disposeTree(selection);
   selection.clear();
-  const r = layoutRef?.rooms.find((r) => r.id === id);
+  let r = null, rFloor = 0;
+  if (layoutRef?.floor_plans) {
+    for (let fi = 0; fi < layoutRef.floor_plans.length; fi++) {
+      const found = layoutRef.floor_plans[fi].rooms.find((x) => x.id === id);
+      if (found) { r = found; rFloor = fi; break; }
+    }
+  }
+  if (!r) r = layoutRef?.rooms.find((x) => x.id === id);
   const badge = document.getElementById("room3DBadge");
   if (badge) {
     badge.hidden = !r;
@@ -844,12 +922,13 @@ function selectRoom(id) {
       : "";
   }
   if (!r) return;
+  const y0 = rFloor * STORY_HEIGHT + 0.035;
   const points = [
-    [r.x, 0.035, r.y],
-    [r.x + r.width, 0.035, r.y],
-    [r.x + r.width, 0.035, r.y + r.height],
-    [r.x, 0.035, r.y + r.height],
-    [r.x, 0.035, r.y],
+    [r.x, y0, r.y],
+    [r.x + r.width, y0, r.y],
+    [r.x + r.width, y0, r.y + r.height],
+    [r.x, y0, r.y + r.height],
+    [r.x, y0, r.y],
   ].map((p) => new THREE.Vector3(...p));
   const line = new THREE.Line(
     new THREE.BufferGeometry().setFromPoints(points),
@@ -933,6 +1012,19 @@ function setPlumbingVisible(v) {
   visibility.plumbing = v;
   if (plumbing) plumbing.visible = v;
 }
+function setFloorHighlight(index) {
+  if (!floors) return;
+  floors.traverse((o) => {
+    if (o.isMesh && o.userData && o.userData.isFloor) {
+      const sel =
+        index >= 0 && o.userData.room && o.userData.floor === index;
+      o.material.color.set(
+        sel ? new THREE.Color("#36d8cf") : o.userData.baseColor,
+      );
+      o.material.needsUpdate = true;
+    }
+  });
+}
 function disposeThree() {
   generation++;
   cancelAnimationFrame(frame);
@@ -972,6 +1064,7 @@ window.ThreeViewer = {
   setPlumbingVisible,
   setLightingMode,
   setCutaway,
+  setFloorHighlight,
   selectRoom,
   disposeThree,
 };

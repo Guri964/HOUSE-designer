@@ -22,9 +22,10 @@
     balcony: { fill: "#F5EEE9", text: "#5E3B2A" },
     dining_room: { fill: "#F4EBE1", text: "#5B3A1D" },
     corridor: { fill: "#F1EFEA", text: "#4A443C" },
-    entrance: { fill: "#F3F0EA", text: "#4A443C" }
+    entrance: { fill: "#F3F0EA", text: "#4A443C" },
+    staircase: { fill: "#E9E7DE", text: "#4A443C" }
   };
-  const SHORT = { living_room: "Living", bedroom: "Bed", kitchen: "Kitchen", bathroom: "Bath", balcony: "Balc.", dining_room: "Dining", corridor: "Corr.", entrance: "Entry" };
+  const SHORT = { living_room: "Living", bedroom: "Bed", kitchen: "Kitchen", bathroom: "Bath", balcony: "Balc.", dining_room: "Dining", corridor: "Corr.", entrance: "Entry", staircase: "Stair" };
   const C = {
     paper: "#FCFAF6", grid: "#EEE9E0", gridMajor: "#E2DBCF", extWall: "#2A2622", intWall: "#7D746A",
     furnFill: "rgba(42,38,34,0.06)", furnStroke: "#8C8378", dim: "#5E574E", water: "#0E8FC4", drain: "#7A4FC9",

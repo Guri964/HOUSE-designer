@@ -65,9 +65,9 @@
     <div class="side-scroll">
       <div>
         <label class="eyebrow" for="reqInput">House requirements</label>
-        <textarea id="reqInput" class="req" placeholder="Describe your ideal home...
+        <textarea id="reqInput" class="req" placeholder="500 square feet, 2 bedrooms, 2 attached bathrooms, 1 kitchen.
 
-Example: Design a modern 3BHK home with an east-facing entrance, a spacious living room, an open kitchen, three bedrooms, and natural cross-ventilation."></textarea>
+Add “2 floors” or “3 floors” for a multi-storey home."></textarea>
         <div class="presets">
           <button data-preset="bhk3">3BHK · 1500 sqft</button>
           <button data-preset="bhk2">2BHK · 1100 sqft</button>
@@ -86,7 +86,7 @@ Example: Design a modern 3BHK home with an east-facing entrance, a spacious livi
           <label class="field"><span>Style</span><select id="cfgStyle"><option>modern</option><option>minimal</option><option>contemporary</option><option>traditional</option><option>luxury</option><option>classic</option></select></label>
           <label class="field"><span>Kitchen</span><select id="cfgKitchen"><option>open</option><option>closed</option></select></label>
           <label class="field"><span>Entrance</span><select id="cfgDirection"><option value="north">north</option><option value="north_east">north east</option><option value="east" selected>east</option><option value="south_east">south east</option><option value="south">south</option><option value="south_west">south west</option><option value="west">west</option><option value="north_west">north west</option></select></label>
-          <label class="field"><span>Floors</span><select id="cfgFloors"><option value="1">1</option></select></label>
+          <label class="field"><span>Floors</span><select id="cfgFloors"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label>
         </div>
         <label class="field" style="margin-top:12px"><span>Cost rate profile</span><select id="rateProfile" style="text-transform:none"><option value="india_tier2_2025">india_tier2_2025</option></select></label>
       </div>
@@ -105,6 +105,7 @@ Example: Design a modern 3BHK home with an east-facing entrance, a spacious livi
         <button class="tgl" data-layer2d="lighting" aria-pressed="true">Lighting</button>
         <button class="tgl" data-layer2d="plumbing" aria-pressed="true">Plumbing</button>
         <button class="tgl" data-layer2d="dimensions" aria-pressed="true">Dimensions</button>
+        <select id="floorSelect" hidden></select>
         <div class="right">
           <button class="icon-btn" id="zoomOut" aria-label="Zoom out"><svg class="ico"><use href="#i-minus"/></svg></button>
           <span class="mono" id="zoomLbl" style="width:44px;text-align:center;font-size:11px">100%</span>

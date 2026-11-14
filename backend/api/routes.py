@@ -9,9 +9,69 @@ from ..validation.compliance import run_compliance
 from ..cost.estimator import estimate_cost
 from ..cost.rates import list_profiles
 from ..schemas.layout_schema import validate_layout_dict
+from ..config import COMPLIANCE_THRESHOLDS
 
 api = Blueprint("api", __name__)
 gcn = GCNInference()
+
+
+def _compliance_status_rank(status: str) -> int:
+    return {"FULLY_COMPLIANT": 2, "PARTIALLY_COMPLIANT": 1, "NON_COMPLIANT": 0}.get(status, 0)
+
+
+def _run_multi_floor_compliance(layout: Dict[str, Any], parsed: Dict[str, Any], gcn_result: Dict[str, Any] = None) -> Dict[str, Any]:
+    """Run compliance per floor and aggregate. Each floor plan carries its own
+    parsed subset (per-floor room program), so counts/areas are checked
+    against what was actually placed on that floor."""
+    floor_plans = layout.get("floor_plans") or []
+    results = []
+    for fp in floor_plans:
+        fp_parsed = fp.get("parsed") or parsed
+        fp_gcn = gcn.predict(fp)
+        results.append(run_compliance(fp, fp_parsed, fp_gcn))
+    if not results:
+        return run_compliance(layout, parsed, gcn_result or {})
+
+    score = round(sum(r["score"] for r in results) / len(results), 3)
+    checks = [c for r in results for c in r.get("checks", [])]
+    passed = [c for r in results for c in r.get("passed", [])]
+    failed = [c for r in results for c in r.get("failed", [])]
+    warnings = [c for r in results for c in r.get("warnings", [])]
+    suggestions = [s for r in results for s in r.get("suggestions", [])]
+
+    # Status follows the aggregate score with the same thresholds as run_compliance,
+    # downgraded when any floor has hard failures.
+    if score >= COMPLIANCE_THRESHOLDS["fully_compliant"]:
+        status = "FULLY_COMPLIANT"
+    elif score >= COMPLIANCE_THRESHOLDS["partially_compliant"]:
+        status = "PARTIALLY_COMPLIANT"
+    else:
+        status = "NON_COMPLIANT"
+    if any(r["failed"] for r in results) and status == "FULLY_COMPLIANT":
+        status = "PARTIALLY_COMPLIANT"
+    if any(c.get("id") == "no_overlap" and not c.get("passed") for c in checks):
+        score = min(score, 0.55)
+        status = "NON_COMPLIANT" if score < 0.60 else "PARTIALLY_COMPLIANT"
+
+    return {
+        "score": score,
+        "status": status,
+        "status_label": status.replace("_", " ").title(),
+        "gcn_score": (gcn_result or {}).get("score"),
+        "rule_score": round(sum(r.get("rule_score", 0) for r in results) / len(results), 3),
+        "checks": checks,
+        "passed": passed,
+        "failed": failed,
+        "warnings": warnings,
+        "suggestions": suggestions,
+        "type_counts": results[0].get("type_counts", {}),
+        "multi_floor": True,
+        "floor_results": [
+            {"floor": fp["floor_index"], "label": fp["label"], "score": r["score"], "status": r["status"]}
+            for fp, r in zip(floor_plans, results)
+        ],
+    }
+
 
 @api.route("/health", methods=["GET"])
 def health():
@@ -70,7 +130,10 @@ def generate():
         for attempt in range(max(1, max_retries)):
             layout = generate_floorplan(parsed)
             gcn_result = gcn.predict(layout)
-            compliance = run_compliance(layout, parsed, gcn_result)
+            if int(layout.get("floors", 1)) > 1:
+                compliance = _run_multi_floor_compliance(layout, parsed, gcn_result)
+            else:
+                compliance = run_compliance(layout, parsed, gcn_result)
             # select best by compliance score
             if best is None or compliance["score"] > best_compliance["score"]:
                 best = layout
@@ -123,7 +186,10 @@ def validate():
         return jsonify({"error": "Invalid layout", "details": errs}), 400
     try:
         gcn_result = gcn.predict(layout)
-        compliance = run_compliance(layout, parsed, gcn_result)
+        if int(layout.get("floors", 1)) > 1:
+            compliance = _run_multi_floor_compliance(layout, parsed, gcn_result)
+        else:
+            compliance = run_compliance(layout, parsed, gcn_result)
         return jsonify({"gcn": gcn_result, "compliance": compliance})
     except Exception as e:
         traceback.print_exc()
