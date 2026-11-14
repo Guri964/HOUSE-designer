@@ -35,7 +35,16 @@ def _run_multi_floor_compliance(layout: Dict[str, Any], parsed: Dict[str, Any], 
     score = round(sum(r["score"] for r in results) / len(results), 3)
     checks = [c for r in results for c in r.get("checks", [])]
     passed = [c for r in results for c in r.get("passed", [])]
-    failed = [c for r in results for c in r.get("failed", [])]
+    # For multi-floor, living room is only required on the ground floor.
+    # Upper floors intentionally omit living rooms (bedrooms/bathrooms there),
+    # so exclude 'living_present' failures from non-ground floors.
+    failed = []
+    for fi, r in enumerate(results):
+        floor_idx = floor_plans[fi]["floor_index"]
+        for f in r.get("failed", []):
+            if f.get("id") == "living_present" and floor_idx != 0:
+                continue
+            failed.append(f)
     warnings = [c for r in results for c in r.get("warnings", [])]
     suggestions = [s for r in results for s in r.get("suggestions", [])]
 

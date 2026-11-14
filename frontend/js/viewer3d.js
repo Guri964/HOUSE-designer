@@ -490,23 +490,15 @@ function bounds() {
   ];
   floorPlans.forEach((plan, fi) => {
     const yOff = fi * STORY_HEIGHT;
+    // Exterior walls extend to STORY_HEIGHT in multi-floor; use that for bounds
+    const topY = yOff + (layoutRef?.floors && layoutRef.floors > 1 ? STORY_HEIGHT : 7.2);
     (plan.rooms || []).forEach((r) => {
       b.expandByPoint(new THREE.Vector3(r.x, yOff, r.y));
       b.expandByPoint(
-        new THREE.Vector3(r.x + r.width, yOff + 7.2, r.y + r.height),
+        new THREE.Vector3(r.x + r.width, topY, r.y + r.height),
       );
     });
   });
-  // top of the highest stair flight
-  if (layoutRef?.floors && layoutRef.floors > 1) {
-    b.expandByPoint(
-      new THREE.Vector3(
-        0,
-        (layoutRef.floors - 1) * STORY_HEIGHT + 7.2,
-        0,
-      ),
-    );
-  }
   return b.isEmpty()
     ? new THREE.Box3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(40, 7.2, 40))
     : b;
@@ -591,6 +583,9 @@ function buildFromLayout(layout, opts = {}) {
   floorPlans.forEach((plan, fi) => {
     const yOff = fi * STORY_HEIGHT;
     (plan.rooms || []).forEach((r) => {
+      // On upper floors, skip the floor slab for the staircase room:
+      // that area is an opening (void) where the flight from below comes up.
+      if (r.type === "staircase" && fi > 0) return;
       const kind =
         r.type === "bedroom" || style === "traditional"
           ? "wood"
@@ -653,8 +648,15 @@ function buildFromLayout(layout, opts = {}) {
     );
   });
   allWallSegments.forEach((s) => {
-    const t = s.exterior ? 0.45 : 0.3,
-      h = s.balcony && s.exterior ? 3.2 : 7.2;
+    const t = s.exterior ? 0.45 : 0.3;
+    // Multi-floor: exterior walls extend to the next floor level so the
+    // building looks connected instead of separate floating platforms.
+    const isMultiFloor = layout.floors && layout.floors > 1;
+    const h = s.balcony && s.exterior
+      ? 3.2
+      : s.exterior && isMultiFloor
+        ? STORY_HEIGHT
+        : 7.2;
     const cuts = apertures
       .filter(
         (a) =>
@@ -815,23 +817,105 @@ function buildFromLayout(layout, opts = {}) {
   // staircase footprint on every floor plan.
   if (layout.staircase && layout.floors && layout.floors > 1) {
     const s = layout.staircase;
-    const stairs = new THREE.Group();
     const stairMat = material("#b9a98a", 0.5);
-    const rise = STORY_HEIGHT / 14;
-    const tread = s.height / 14;
+    const stairSideMat = material("#8d7a62", 0.55);
+    const nosingMat = material("#a9a194", 0.4);
+    const RISE = STORY_HEIGHT / 14;        // ~0.71 ft per riser
+    const TREAD = s.height / 14;            // ~0.71 ft per tread
+    const STAIR_THICKNESS = 0.18;           // floor slab thickness
+    const OPENING_PADDING = 0.4;            // extra clearance around stair opening
+
+    // ---- Floor openings (voids) on upper floors where stairs pass through ----
+    // On every floor above ground, the area directly above the lower flight is
+    // open so the staircase can connect floor to floor.
+    for (let f = 1; f < layout.floors; f++) {
+      const yOff = f * STORY_HEIGHT;
+      // A dark opening box shows the void in the floor slab at the stair location
+      box(
+        floors,
+        s.width + OPENING_PADDING * 2,
+        STAIR_THICKNESS,
+        s.height + OPENING_PADDING * 2,
+        s.x + s.width / 2,
+        yOff - STAIR_THICKNESS / 2,
+        s.y + s.height / 2,
+        material("#2a2622", 0.9),
+      );
+    }
+
+    // ---- The staircase itself: stringers + steps for each flight ----
+    const stairs = new THREE.Group();
     for (let f = 0; f < layout.floors - 1; f++) {
+      const baseY = f * STORY_HEIGHT;
+      // Stringers (angled side supports) - one on each side of the stair run
+      for (let side = 0; side < 2; side++) {
+        const sideX = s.x + (side === 0 ? 0 : s.width);
+        const pts = [];
+        pts.push(new THREE.Vector3(sideX, baseY, s.y));
+        for (let k = 0; k <= 14; k++) {
+          pts.push(new THREE.Vector3(
+            sideX,
+            baseY + k * RISE,
+            s.y + k * TREAD,
+          ));
+        }
+        pts.push(new THREE.Vector3(sideX, baseY + STORY_HEIGHT, s.y + s.height));
+        // Close the stringer polygon (extruded along stair width)
+        const shape = new THREE.Shape();
+        shape.moveTo(0, 0);
+        for (let k = 0; k < pts.length; k++) {
+          shape.lineTo(pts[k].z - s.y, pts[k].y - baseY);
+        }
+        shape.lineTo(s.height, 0);
+        shape.closePath();
+        const extrudeSettings = { depth: s.width, bevelEnabled: false };
+        const geom = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+        const mesh = new THREE.Mesh(geom, stairSideMat);
+        mesh.position.set(sideX === s.x ? s.x : s.x + s.width, baseY, s.y);
+        if (sideX === s.x + s.width) mesh.rotation.y = Math.PI;
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        stairs.add(mesh);
+      }
+
+      // Steps: riser + tread for each step of the flight
       for (let k = 0; k < 14; k++) {
+        const stepY = baseY + k * RISE;
+        const stepZ = s.y + k * TREAD;
+        // Riser (vertical face)
         box(
           stairs,
           s.width,
-          rise,
-          tread,
+          RISE,
+          0.12,
           s.x + s.width / 2,
-          f * STORY_HEIGHT + k * rise + rise / 2,
-          s.y + k * tread + tread / 2,
+          stepY + RISE / 2,
+          stepZ + TREAD / 2 - 0.06,
           stairMat,
         );
+        // Tread (horizontal walking surface)
+        box(
+          stairs,
+          s.width,
+          0.12,
+          TREAD,
+          s.x + s.width / 2,
+          stepY + RISE,
+          stepZ + TREAD / 2,
+          nosingMat,
+        );
       }
+      // Top landing tread (level with upper floor)
+      box(
+        stairs,
+        s.width,
+        0.12,
+        s.height - 14 * TREAD + TREAD,
+        s.x + s.width / 2,
+        baseY + STORY_HEIGHT,
+        s.y + s.height - (s.height - 14 * TREAD) / 2,
+        nosingMat,
+      );
     }
     model.add(stairs);
   }

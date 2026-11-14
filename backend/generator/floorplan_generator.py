@@ -292,12 +292,16 @@ def _place_rooms_tiled(area_map: Dict[str, List[float]], total_area: float, entr
     return rooms, round(W, 2), round(H, 2)
 
 
-def _place_floor_at_fixed_width(area_map: Dict[str, List[float]], W: float, y0: float = 0.0) -> Tuple[List[Dict[str, Any]], float]:
+def _place_floor_at_fixed_width(area_map: Dict[str, List[float]], W: float,
+                               y0: float = 0.0,
+                               min_dim_scale: float = 1.0) -> Tuple[List[Dict[str, Any]], float]:
     """Place rooms into row bands at a FIXED width W starting at depth y0.
 
     Used for multi-floor layouts where every floor shares one footprint so the
     staircase (reserved at the bottom-right corner) stays aligned across floors.
     Doors/windows are NOT added here; the layout assembler adds them afterwards.
+    min_dim_scale relaxes minimum dimensions (e.g. 0.7 = 30% smaller) for small
+    multi-floor budgets where standard min dims cannot fit.
     Returns (rooms, height_used).
     """
     ordered: List[Tuple[str, float]] = []
@@ -323,7 +327,7 @@ def _place_floor_at_fixed_width(area_map: Dict[str, List[float]], W: float, y0: 
         mh = 0.0
         for rtype, _ in g:
             min_w, min_h = MIN_ROOM_DIMS.get(rtype, (8, 8))
-            mh = max(mh, float(min(min_w, min_h)))
+            mh = max(mh, float(min(min_w, min_h)) * min_dim_scale)
         min_heights.append(mh)
 
     heights = [area / W for area in group_areas]
@@ -341,6 +345,8 @@ def _place_floor_at_fixed_width(area_map: Dict[str, List[float]], W: float, y0: 
         for (rtype, area) in grp:
             w = area / h if h > 0.1 else area / 10.0
             min_w, min_h = MIN_ROOM_DIMS.get(rtype, (8, 8))
+            min_w = min_w * min_dim_scale
+            min_h = min_h * min_dim_scale
             if rtype == "balcony":
                 if w < 10:
                     w = max(w, 9.0)
@@ -399,6 +405,193 @@ def _place_floor_at_fixed_width(area_map: Dict[str, List[float]], W: float, y0: 
     H_used = (y_cursor - y0) if rooms else 0.0
     W_out = max(r["x"] + r["width"] for r in rooms) if rooms else W
     return rooms, round(H_used, 2), round(W_out, 2)
+
+
+def _place_floor_with_openings(area_map: Dict[str, List[float]], W: float,
+                               entrance_dir: str, is_ground_floor: bool,
+                               y0: float = 0.0,
+                               min_dim_scale: float = 1.0
+                               ) -> Tuple[List[Dict[str, Any]], float]:
+    """Place rooms on a floor and add entrance door, internal doors, and windows."""
+    rooms, h_used, w_out = _place_floor_at_fixed_width(
+        area_map, W, y0=y0, min_dim_scale=min_dim_scale)
+    _add_doors_windows_to_floor(rooms, W, h_used + y0, entrance_dir, is_ground_floor)
+    return rooms, h_used
+
+
+def _exterior_wall_for_direction(entrance_dir: str) -> str:
+    """Map facing direction to the exterior wall where the entrance goes.
+    east -> right (east), north -> top (north), etc."""
+    return {
+        "north": "north",
+        "south": "south",
+        "east": "east",
+        "west": "west",
+        "north_east": "east",
+        "north_west": "west",
+        "south_east": "east",
+        "south_west": "west",
+    }.get(entrance_dir, "east")
+
+
+def _room_touches_wall(r: Dict[str, Any], W: float, H: float, wall: str) -> bool:
+    """Check if a room touches a given exterior wall of the footprint."""
+    eps = 0.5
+    if wall == "north":
+        return r["y"] < eps
+    if wall == "south":
+        return r["y"] + r["height"] > H - eps
+    if wall == "east":
+        return r["x"] + r["width"] > W - eps
+    if wall == "west":
+        return r["x"] < eps
+    return False
+
+
+def _add_entrance_door(rooms: List[Dict[str, Any]], W: float, H: float,
+                       entrance_dir: str) -> Dict[str, Any] | None:
+    """Place the main entrance door on the exterior wall per facing direction,
+    in the living room (ground floor). Adds the door directly to the room's
+    doors list. Returns the door dict or None."""
+    wall = _exterior_wall_for_direction(entrance_dir)
+    # Prefer living room, fall back to any non-staircase room touching the wall
+    candidates = [r for r in rooms if r["type"] == "living_room" and
+                  _room_touches_wall(r, W, H, wall)]
+    if not candidates:
+        candidates = [r for r in rooms if r["type"] != "staircase" and
+                      _room_touches_wall(r, W, H, wall)]
+    if not candidates:
+        return None
+    r = candidates[0]
+    if wall == "north":
+        dx, dy = r["x"] + r["width"] / 2, r["y"]
+        dwall = "north"
+    elif wall == "south":
+        dx, dy = r["x"] + r["width"] / 2, r["y"] + r["height"]
+        dwall = "south"
+    elif wall == "east":
+        dx, dy = r["x"] + r["width"], r["y"] + r["height"] / 2
+        dwall = "east"
+    else:  # west
+        dx, dy = r["x"], r["y"] + r["height"] / 2
+        dwall = "west"
+    door = {
+        "id": f"{r['id']}_entrance_door",
+        "wall": dwall,
+        "x": round(dx, 2),
+        "y": round(dy, 2),
+        "width": 3.0,
+        "entrance": True,
+    }
+    r["doors"].append(door)
+    return door
+
+
+def _rooms_share_wall(a: Dict[str, Any], b: Dict[str, Any]) -> str | None:
+    """Return the shared wall side ('north','south','east','west') if rooms
+    are adjacent, else None."""
+    eps = 0.1
+    a_x1, a_y1, a_x2, a_y2 = a["x"], a["y"], a["x"] + a["width"], a["y"] + a["height"]
+    b_x1, b_y1, b_x2, b_y2 = b["x"], b["y"], b["x"] + b["width"], b["y"] + b["height"]
+    # a north of b (a.bottom == b.top)
+    if abs(a_y2 - b_y1) < eps:
+        overlap = min(a_x2, b_x2) - max(a_x1, b_x1)
+        if overlap > 1.5:
+            return "south"
+    # a south of b (a.top == b.bottom)
+    if abs(a_y1 - b_y2) < eps:
+        overlap = min(a_x2, b_x2) - max(a_x1, b_x1)
+        if overlap > 1.5:
+            return "north"
+    # a east of b (a.left == b.right)
+    if abs(a_x2 - b_x1) < eps:
+        overlap = min(a_y2, b_y2) - max(a_y1, b_y1)
+        if overlap > 1.5:
+            return "east"
+    # a west of b (a.right == b.left)
+    if abs(a_x1 - b_x2) < eps:
+        overlap = min(a_y2, b_y2) - max(a_y1, b_y1)
+        if overlap > 1.5:
+            return "west"
+    return None
+
+
+def _add_internal_doors(rooms: List[Dict[str, Any]]) -> None:
+    """Add internal doors between rooms that share a wall."""
+    door_id = 1
+    for i in range(len(rooms)):
+        for j in range(i + 1, len(rooms)):
+            a, b = rooms[i], rooms[j]
+            if a["type"] == "staircase" or b["type"] == "staircase":
+                continue
+            shared = _rooms_share_wall(a, b)
+            if shared is None:
+                continue
+            # Door on the shared wall, centered in the overlapping segment
+            eps = 0.1
+            a_x1, a_y1, a_x2, a_y2 = a["x"], a["y"], a["x"] + a["width"], a["y"] + a["height"]
+            b_x1, b_y1, b_x2, b_y2 = b["x"], b["y"], b["x"] + b["width"], b["y"] + b["height"]
+            if shared in ("south", "north"):
+                cx = max(a_x1, b_x1)
+                cw = min(a_x2, b_x2) - cx
+                dx = cx + cw / 2
+                dy = a_y2 if shared == "south" else a_y1
+                dwall = shared
+            else:
+                cy = max(a_y1, b_y1)
+                ch = min(a_y2, b_y2) - cy
+                dy = cy + ch / 2
+                dx = a_x2 if shared == "east" else a_x1
+                dwall = shared
+            a["doors"].append({
+                "id": f"{a['id']}_int_door_{door_id}",
+                "wall": dwall, "x": round(dx, 2), "y": round(dy, 2),
+                "width": 3.0, "internal": True,
+            })
+            b["doors"].append({
+                "id": f"{b['id']}_int_door_{door_id}",
+                "wall": dwall, "x": round(dx, 2), "y": round(dy, 2),
+                "width": 3.0, "internal": True,
+            })
+            door_id += 1
+
+
+def _add_windows(rooms: List[Dict[str, Any]], W: float, H: float) -> None:
+    """Add windows on exterior walls for habitable rooms."""
+    for r in rooms:
+        if r["type"] in ("staircase", "corridor"):
+            continue
+        # Determine which exterior walls this room touches
+        touched = [w for w in ("north", "south", "east", "west")
+                   if _room_touches_wall(r, W, H, w)]
+        if not touched:
+            continue
+        # Prefer north/east walls for windows
+        pref = [w for w in ("north", "east", "south", "west") if w in touched]
+        wall = pref[0]
+        if wall in ("north", "south"):
+            dx = r["x"] + r["width"] / 2
+            dy = r["y"] if wall == "north" else r["y"] + r["height"]
+        else:
+            dx = r["x"] if wall == "west" else r["x"] + r["width"]
+            dy = r["y"] + r["height"] / 2
+        r["windows"].append({
+            "id": f"{r['id']}_win_ext",
+            "wall": wall, "x": round(dx, 2), "y": round(dy, 2),
+            "width": 3.0,
+        })
+
+
+def _add_doors_windows_to_floor(rooms: List[Dict[str, Any]], W: float, H: float,
+                                entrance_dir: str, is_ground_floor: bool) -> None:
+    """Add entrance door, internal doors, and windows to all rooms on a floor."""
+    # Entrance door on exterior wall (ground floor only)
+    if is_ground_floor:
+        _add_entrance_door(rooms, W, H, entrance_dir)
+    # Internal doors between rooms
+    _add_internal_doors(rooms)
+    # Windows on exterior walls
+    _add_windows(rooms, W, H)
 
 
 def _distribute_counts_across_floors(parsed: Dict[str, Any], floors: int) -> List[Dict[str, int]]:
@@ -549,11 +742,44 @@ def _assemble_layout(rooms: List[Dict[str, Any]], W: float, H: float, parsed: Di
     return layout
 
 
+def _add_single_floor_entrance(layout: Dict[str, Any], entrance_dir: str) -> None:
+    """Place the main entrance door on the exterior wall per facing direction,
+    in the living room. Adds to both the room's doors and layout's doors."""
+    W = layout["width"]; H = layout["height"]
+    wall = _exterior_wall_for_direction(entrance_dir)
+    # Find living room touching the entrance wall
+    candidates = [r for r in layout["rooms"]
+                  if r["type"] == "living_room" and _room_touches_wall(r, W, H, wall)]
+    if not candidates:
+        candidates = [r for r in layout["rooms"]
+                      if r["type"] != "staircase" and _room_touches_wall(r, W, H, wall)]
+    if not candidates:
+        return
+    r = candidates[0]
+    if wall == "north":
+        dx, dy = r["x"] + r["width"] / 2, r["y"]; dwall = "north"
+    elif wall == "south":
+        dx, dy = r["x"] + r["width"] / 2, r["y"] + r["height"]; dwall = "south"
+    elif wall == "east":
+        dx, dy = r["x"] + r["width"], r["y"] + r["height"] / 2; dwall = "east"
+    else:
+        dx, dy = r["x"], r["y"] + r["height"] / 2; dwall = "west"
+    door = {
+        "id": f"{r['id']}_entrance_door",
+        "wall": dwall, "x": round(dx, 2), "y": round(dy, 2),
+        "width": 3.0, "entrance": True,
+    }
+    r["doors"].append(door)
+    layout["doors"].append(door)
+
+
 def _finalize_single_floor(layout: Dict[str, Any], parsed: Dict[str, Any]) -> Dict[str, Any]:
     layout["floors"] = 1
     layout["floor_index"] = 0
     layout["active_floor"] = 0
     layout["staircase"] = None
+    # Add main entrance door on exterior wall per facing direction
+    _add_single_floor_entrance(layout, parsed.get("main_entrance_direction", "east"))
     floor_plan = {
         "floor_index": 0,
         "label": "Ground Floor",
@@ -599,15 +825,21 @@ def generate_floorplan(parsed: Dict[str, Any]) -> Dict[str, Any]:
 
     counts_per_floor = _distribute_counts_across_floors(parsed, floors)
     budget_per_floor = total_area / floors
+    # Relax min dims for small per-floor budgets (multi-floor compact homes)
+    min_dim_scale = 1.0
+    if budget_per_floor < 300:
+        min_dim_scale = 0.75
 
     # Grow the common footprint height until every floor's rooms fit above the
     # reserved staircase strip (bottom-right corner, height STAIR_DEPTH).
+    # Use the same min_dim_scale as the actual placement so H_common matches.
     for _ in range(6):
         max_needed = STAIR_DEPTH
         for fi in range(floors):
             f_parsed = _parsed_for_floor(parsed, counts_per_floor[fi], budget_per_floor)
             f_area_map = _distribute_areas(f_parsed)
-            _, h_used, _w_out = _place_floor_at_fixed_width(f_area_map, W, y0=STAIR_DEPTH)
+            _, h_used, _w_out = _place_floor_at_fixed_width(
+                f_area_map, W, y0=STAIR_DEPTH, min_dim_scale=min_dim_scale)
             max_needed = max(max_needed, STAIR_DEPTH + h_used)
         if max_needed <= H_common:
             break
@@ -633,9 +865,15 @@ def generate_floorplan(parsed: Dict[str, Any]) -> Dict[str, Any]:
     all_plumbing_routes: List[Dict[str, Any]] = []
 
     for fi in range(floors):
+        # Relax min dims for small per-floor budgets (multi-floor compact homes)
+        min_dim_scale = 1.0
+        if budget_per_floor < 300:
+            min_dim_scale = 0.75
         f_parsed = _parsed_for_floor(parsed, counts_per_floor[fi], budget_per_floor)
         f_area_map = _distribute_areas(f_parsed)
-        rooms_f, h_used, _w_out = _place_floor_at_fixed_width(f_area_map, W, y0=STAIR_DEPTH)
+        rooms_f, h_used = _place_floor_with_openings(
+            f_area_map, W, entrance_dir, is_ground_floor=(fi == 0),
+            y0=STAIR_DEPTH, min_dim_scale=min_dim_scale)
         for r in rooms_f:
             r["floor"] = fi
 
@@ -662,15 +900,15 @@ def generate_floorplan(parsed: Dict[str, Any]) -> Dict[str, Any]:
         }
         floor_plans.append(floor_plan)
 
-        active = (fi == 0)
-        if active:
-            all_rooms.extend(floor_rooms)
-            all_furniture.extend(floor_layout["furniture"])
-            all_lighting.extend(floor_layout["lighting"])
-            all_doors.extend(floor_layout["doors"])
-            all_windows.extend(floor_layout["windows"])
-            all_plumbing_fixtures.extend(floor_layout["plumbing_fixtures"])
-            all_plumbing_routes.extend(floor_layout["plumbing_routes"])
+        # ALL floors' rooms go into layout["rooms"] so compliance/cost/GCN
+        # see the complete building, not just the active floor.
+        all_rooms.extend(floor_rooms)
+        all_furniture.extend(floor_layout["furniture"])
+        all_lighting.extend(floor_layout["lighting"])
+        all_doors.extend(floor_layout["doors"])
+        all_windows.extend(floor_layout["windows"])
+        all_plumbing_fixtures.extend(floor_layout["plumbing_fixtures"])
+        all_plumbing_routes.extend(floor_layout["plumbing_routes"])
 
     actual_total = sum(r["area"] for r in all_rooms)
     orient = orientation_metadata(entrance_dir, W, H_common)
