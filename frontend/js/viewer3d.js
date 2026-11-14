@@ -593,7 +593,7 @@ function buildFromLayout(layout, opts = {}) {
     // the slab is split into strips around the stair opening.
     if (fi > 0 && stairRoom) {
       const s = stairRoom;
-      const Wb = layout.width || 40, Hb = layout.height || 40;
+      const Wb = layout.width, Hb = layout.height;
       const cz = Hb / 2;
       // Left strip (x: 0 → s.x)
       if (s.x > 0.1) box(floors, s.x, 0.18, Hb, s.x / 2, yOff - 0.09, cz, slabMat);
@@ -604,7 +604,7 @@ function buildFromLayout(layout, opts = {}) {
       if (s.height < Hb - 0.1) box(floors, s.width, 0.18, Hb - s.height, s.x + s.width / 2, yOff - 0.09, s.height + (Hb - s.height) / 2, slabMat);
     } else {
       // No stair opening: single full slab
-      box(floors, layout.width || 40, 0.18, layout.height || 40, (layout.width || 40) / 2, yOff - 0.09, (layout.height || 40) / 2, slabMat);
+      box(floors, layout.width, 0.18, layout.height, layout.width / 2, yOff - 0.09, layout.height / 2, slabMat);
     }
 
     (plan.rooms || []).forEach((r) => {
