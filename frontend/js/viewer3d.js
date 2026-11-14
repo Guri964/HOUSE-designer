@@ -580,8 +580,33 @@ function buildFromLayout(layout, opts = {}) {
       plumbing_routes: layout.plumbing_routes || [],
     },
   ];
+  // Structural slab material (concrete, visible between rooms and at edges)
+  const slabMat = material("#8d8782", 0.85);
+
   floorPlans.forEach((plan, fi) => {
     const yOff = fi * STORY_HEIGHT;
+    const stairRoom = plan.rooms.find((r) => r.type === "staircase");
+
+    // ---- Continuous full-building floor slab (structural) ----
+    // Covers the entire footprint so floors look like connected slabs,
+    // not separate floating platforms. On upper floors with a staircase,
+    // the slab is split into strips around the stair opening.
+    if (fi > 0 && stairRoom) {
+      const s = stairRoom;
+      const Wb = layout.width, Hb = layout.height;
+      const cz = Hb / 2;
+      // Left strip (x: 0 → s.x)
+      if (s.x > 0.1) box(floors, s.x, 0.18, Hb, s.x / 2, yOff - 0.09, cz, slabMat);
+      // Right strip (x: s.x+s.width → Wb)
+      const rightStart = s.x + s.width;
+      if (rightStart < Wb - 0.1) box(floors, Wb - rightStart, 0.18, Hb, rightStart + (Wb - rightStart) / 2, yOff - 0.09, cz, slabMat);
+      // Back strip (z: s.height → Hb, only under stair x-range)
+      if (s.height < Hb - 0.1) box(floors, s.width, 0.18, Hb - s.height, s.x + s.width / 2, yOff - 0.09, s.height + (Hb - s.height) / 2, slabMat);
+    } else {
+      // No stair opening: single full slab
+      box(floors, layout.width, 0.18, layout.height, layout.width / 2, yOff - 0.09, layout.height / 2, slabMat);
+    }
+
     (plan.rooms || []).forEach((r) => {
       // On upper floors, skip the floor slab for the staircase room:
       // that area is an opening (void) where the flight from below comes up.
@@ -822,57 +847,28 @@ function buildFromLayout(layout, opts = {}) {
     const nosingMat = material("#a9a194", 0.4);
     const RISE = STORY_HEIGHT / 14;        // ~0.71 ft per riser
     const TREAD = s.height / 14;            // ~0.71 ft per tread
-    const STAIR_THICKNESS = 0.18;           // floor slab thickness
-    const OPENING_PADDING = 0.4;            // extra clearance around stair opening
+    const STRINGER_THICK = 0.6;             // thin stringer board thickness (ft)
 
-    // ---- Floor openings (voids) on upper floors where stairs pass through ----
-    // On every floor above ground, the area directly above the lower flight is
-    // open so the staircase can connect floor to floor.
-    for (let f = 1; f < layout.floors; f++) {
-      const yOff = f * STORY_HEIGHT;
-      // A dark opening box shows the void in the floor slab at the stair location
-      box(
-        floors,
-        s.width + OPENING_PADDING * 2,
-        STAIR_THICKNESS,
-        s.height + OPENING_PADDING * 2,
-        s.x + s.width / 2,
-        yOff - STAIR_THICKNESS / 2,
-        s.y + s.height / 2,
-        material("#2a2622", 0.9),
-      );
-    }
-
-    // ---- The staircase itself: stringers + steps for each flight ----
+    // ---- The staircase itself: thin stringers + steps for each flight ----
     const stairs = new THREE.Group();
     for (let f = 0; f < layout.floors - 1; f++) {
       const baseY = f * STORY_HEIGHT;
-      // Stringers (angled side supports) - one on each side of the stair run
+      // Stringers: thin vertical boards on each side following the step profile.
+      // Extruded by STRINGER_THICK (0.6 ft) along the stair width, NOT the full
+      // 4 ft width — that created the oversized triangular wedges.
       for (let side = 0; side < 2; side++) {
-        const sideX = s.x + (side === 0 ? 0 : s.width);
-        const pts = [];
-        pts.push(new THREE.Vector3(sideX, baseY, s.y));
-        for (let k = 0; k <= 14; k++) {
-          pts.push(new THREE.Vector3(
-            sideX,
-            baseY + k * RISE,
-            s.y + k * TREAD,
-          ));
-        }
-        pts.push(new THREE.Vector3(sideX, baseY + STORY_HEIGHT, s.y + s.height));
-        // Close the stringer polygon (extruded along stair width)
+        const sideX = side === 0 ? s.x : s.x + s.width - STRINGER_THICK;
         const shape = new THREE.Shape();
         shape.moveTo(0, 0);
-        for (let k = 0; k < pts.length; k++) {
-          shape.lineTo(pts[k].z - s.y, pts[k].y - baseY);
+        for (let k = 0; k <= 14; k++) {
+          shape.lineTo(k * TREAD, k * RISE);
         }
         shape.lineTo(s.height, 0);
         shape.closePath();
-        const extrudeSettings = { depth: s.width, bevelEnabled: false };
+        const extrudeSettings = { depth: STRINGER_THICK, bevelEnabled: false };
         const geom = new THREE.ExtrudeGeometry(shape, extrudeSettings);
         const mesh = new THREE.Mesh(geom, stairSideMat);
-        mesh.position.set(sideX === s.x ? s.x : s.x + s.width, baseY, s.y);
-        if (sideX === s.x + s.width) mesh.rotation.y = Math.PI;
+        mesh.position.set(sideX, baseY, s.y);
         mesh.castShadow = true;
         mesh.receiveShadow = true;
         stairs.add(mesh);
@@ -1030,7 +1026,11 @@ function fitCamera(top = false) {
   if (!layoutRef) return;
   const b = bounds(),
     center = b.getCenter(new THREE.Vector3());
-  center.y = 1.6;
+  // For multi-floor, look at the middle height of the building so both
+  # floors are visible in the initial view.
+  center.y = layoutRef?.floors && layoutRef.floors > 1
+    ? (layoutRef.floors - 1) * STORY_HEIGHT / 2
+    : 1.6;
   const direction = top
     ? new THREE.Vector3(0, 1, 0.0001).normalize()
     : new THREE.Vector3(0.55, 1.3, 0.85).normalize();
