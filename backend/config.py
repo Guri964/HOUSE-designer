@@ -96,7 +96,8 @@ MIN_ROOM_DIMS = {
     "balcony": (6, 4),
     "dining_room": (8, 8),
     "corridor": (3, 6),
-    "entrance": (3, 3)
+    "entrance": (3, 3),
+    "staircase": (4, 8)
 }
 
 STYLE_PRESETS = ["modern", "traditional", "minimal", "luxury", "contemporary", "classic"]

@@ -7,13 +7,13 @@
   const kv = (k, v) => `<div class="kv"><span>${esc(k)}</span><span>${v}</span></div>`;
 
   const PRESETS = {
-    bhk3: "I want a modern 3BHK house with 1500 square feet of built-up area, three bedrooms, two bathrooms, an open kitchen, a spacious living room, a balcony, furniture placement, proper lighting, plumbing connections, and an east-facing main entrance.",
-    bhk2: "2BHK minimal house, 1100 sqft, 2 bedrooms 2 bathrooms, open kitchen, living and dining combined, one balcony, north facing entrance, furniture and lighting",
-    bhk4: "Luxury 4BHK villa 2200 sqft, 4 bedrooms, 3 bathrooms, open kitchen, dining, living, 2 balconies, south facing, modern style, furniture lighting plumbing",
-    studio: "1BHK compact 650 sqft, 1 bedroom, 1 bathroom, open kitchen, living hall, east facing, minimal furniture"
+    bhk3: "I want a modern 3BHK house with 1500 square feet of built-up area, three bedrooms, two bathrooms, an open kitchen, a living room, and an east-facing main entrance.",
+    bhk2: "2BHK minimal house, 1100 sqft, 2 bedrooms, 2 bathrooms, open kitchen, living and dining combined, one balcony, north facing entrance.",
+    bhk4: "Luxury 4BHK villa 2200 sqft, 4 bedrooms, 3 bathrooms, open kitchen, dining, living, 2 balconies, south facing, modern style.",
+    studio: "1BHK compact 650 sqft, 1 bedroom, 1 bathroom, open kitchen, living hall, east facing."
   };
 
-  const S = { result: null, lastParsed: null, busy: false, view: 'plan', zoom: 1, selected: null,
+  const S = { result: null, lastParsed: null, busy: false, view: 'plan', zoom: 1, selected: null, activeFloor: 0,
     l2: { furniture: true, lighting: true, plumbing: true, dimensions: true }, l3: { walls: true, furniture: true, lighting: true, plumbing: true } };
 
   const req = $('reqInput'), cfg = {
@@ -122,6 +122,7 @@
       const o = buildOverride(text); if (o) payload.parsed = o;
       const d = await API.generate(payload);
       S.result = d; S.lastParsed = d.parsed; syncFromParsed(d.parsed); S.selected = d.layout.rooms[0] || null; S.zoom = 1;
+      S.activeFloor = 0; syncFloorSelect();
       setBusy(false); renderAll(); setView('plan');
       toast(`Generated — ${d.compliance.status_label} (${d.compliance.score})`);
     } catch (e) {
@@ -139,9 +140,10 @@
 
   $('resetBtn').addEventListener('click', () => {
     window.ThreeViewer?.disposeThree(); $('room3DBadge').hidden = true;
-    req.value = ''; S.result = null; S.lastParsed = null; S.selected = null; S.zoom = 1;
+    req.value = ''; S.result = null; S.lastParsed = null; S.selected = null; S.activeFloor = 0; S.zoom = 1;
     $('parsePreview').hidden = true; $('errorBox').hidden = true; $('planSvg').hidden = true; $('planSvg').innerHTML = '';
     $('planEmpty').hidden = false; $('planDims').hidden = true; $('twinEmpty').hidden = false; $('twinBadge').hidden = true;
+    $('floorSelect').hidden = true; $('floorSelect').innerHTML = '';
     $('inspector').hidden = true; $('exportBtn').disabled = true; $('camReset').disabled = $('camTop').disabled = true;
     $('projectName').textContent = 'Untitled residence'; $('projectSub').textContent = 'No generation yet';
     $('footGen').textContent = 'Idle — ready'; $('footWarn').textContent = ''; renderReport(); toast('Reset complete');
@@ -160,6 +162,22 @@
   $('sideToggle').addEventListener('click', () => $('side').classList.toggle('closed'));
   if (window.innerWidth < 1024) $('side').classList.add('closed');
 
+  // Active floor plan for the 2D view. Single-floor designs return the layout itself.
+  function currentPlan() {
+    if (!S.result) return null;
+    const L = S.result.layout;
+    return (L.floor_plans || [])[S.activeFloor] || L;
+  }
+  // Keep the floor selector in sync with the generated design.
+  function syncFloorSelect() {
+    const fs = $('floorSelect'), L = S.result && S.result.layout;
+    const floors = L && L.floors > 1 ? L.floors : 1;
+    fs.hidden = floors <= 1;
+    if (!fs.hidden) {
+      fs.innerHTML = (L.floor_plans || []).map(fp => `<option value="${fp.floor_index}">${esc(fp.label)}</option>`).join('');
+      fs.value = S.activeFloor;
+    }
+  }
   // ---------- 2D ----------
   window.onRoomSelect = room => { S.selected = room; window.ThreeViewer?.selectRoom(room.id); window.PlanView.select($('planSvg'), room.id); renderInspector(); };
   const PV = window.PlanView;
@@ -168,13 +186,32 @@
   function render2D() {
     if (!S.result) return;
     const svg = $('planSvg'); svg.hidden = false; $('planEmpty').hidden = true;
-    renderPlan(svg, S.result.layout, S.l2);
+    const L = S.result.layout, plan = currentPlan();
+    const view = {
+      ...L,
+      width: plan.width, height: plan.height,
+      rooms: plan.rooms,
+      furniture: plan.furniture,
+      lighting: plan.lighting,
+      doors: plan.doors,
+      windows: plan.windows,
+      plumbing_fixtures: plan.plumbing_fixtures,
+      plumbing_routes: plan.plumbing_routes,
+      total_area: plan.total_area,
+    };
+    renderPlan(svg, view, S.l2);
     if (S.selected) PV.select(svg, S.selected.id);
-    const L = S.result.layout; const d = $('planDims'); d.hidden = false;
+    const d = $('planDims'); d.hidden = false;
     const issues = PV.issues(svg);
-    d.textContent = `${L.width.toFixed(1)} × ${L.height.toFixed(1)} ft · ${L.built_up_area.toFixed(0)} sqft built-up · ${L.rooms.length} rooms · drag to pan · scroll to zoom · click a room to inspect`
+    d.textContent = `${(plan.label || 'Ground Floor')} · ${view.width.toFixed(1)} × ${view.height.toFixed(1)} ft · ${(plan.total_area || view.total_area).toFixed(0)} sqft · ${view.rooms.length} rooms · drag to pan · scroll to zoom · click a room to inspect`
       + (issues.length ? ` · ⚠ backend geometry: ${issues.map(i => `${i.a} overlaps ${i.b} (${(i.w * i.h).toFixed(0)} sqft)`).join('; ')}` : '');
   }
+  $('floorSelect').addEventListener('change', () => {
+    if (!S.result) return;
+    S.activeFloor = +$('floorSelect').value;
+    render2D(); renderInspector();
+    window.ThreeViewer?.setFloorHighlight(S.activeFloor);
+  });
   document.querySelectorAll('[data-layer2d]').forEach(b => b.addEventListener('click', () => {
     const k = b.dataset.layer2d; S.l2[k] = !S.l2[k]; b.setAttribute('aria-pressed', S.l2[k]); render2D();
   }));
@@ -192,8 +229,9 @@
     const L = S.result.layout;
     $('twinEmpty').hidden = true; $('camReset').disabled = $('camTop').disabled = false;
     const b = $('twinBadge'); b.hidden = false;
-    b.textContent = `${L.rooms.length} rooms · ${(L.furniture || []).length} furniture · ${(L.lighting || []).length} lights · drag to orbit · right-drag to pan · scroll to zoom`;
-    const go = () => { const t = TV(); if (!t) return setTimeout(go, 150); t.buildFromLayout(L, { style: S.result.parsed.style }); t.selectRoom(S.selected?.id); apply3DLayers(); window.dispatchEvent(new Event('resize')); };
+    const totalRooms = (L.floor_plans || []).reduce((sum, fp) => sum + fp.rooms.length, 0) || L.rooms.length;
+    b.textContent = `${totalRooms} rooms across ${L.floors || 1} floor(s) · ${(L.furniture || []).length} furniture · ${(L.lighting || []).length} lights · drag to orbit · right-drag to pan · scroll to zoom`;
+    const go = () => { const t = TV(); if (!t) return setTimeout(go, 150); t.buildFromLayout(L, { style: S.result.parsed.style }); t.selectRoom(S.selected?.id); t.setFloorHighlight(S.activeFloor); apply3DLayers(); window.dispatchEvent(new Event('resize')); };
     setTimeout(go, 120);
   }
   document.querySelectorAll('[data-layer3d]').forEach(b => b.addEventListener('click', () => {
@@ -215,6 +253,7 @@
     const r = S.result, el = $('inspector'); if (!r) { el.hidden = true; return; }
     el.hidden = false;
     const { layout: L, compliance: C, cost: K, gcn: G } = r;
+    const plan = currentPlan() || L;
     const tone = C.status === 'FULLY_COMPLIANT' ? 'ok' : C.status === 'PARTIALLY_COMPLIANT' ? 'warn' : 'bad';
     const sel = S.selected;
     el.innerHTML = `
@@ -232,8 +271,8 @@
         <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">${K.by_category.map(c => `<div><div class="kv"><span style="text-transform:capitalize">${esc(c.category)}</span><span class="mono">${esc(c.pct)}%</span></div><div class="bar"><i style="width:${+c.pct || 0}%"></i></div></div>`).join('')}</div>
         <p class="small">Estimate only — not a contractor quotation.</p></div>
       <div><p class="eyebrow">Systems</p><div style="margin-top:8px">
-        ${kv('Furniture', `${L.furniture.length} items`)}${kv('Lighting', `${L.lighting.length} fixtures`)}
-        ${kv('Plumbing', `${L.plumbing_fixtures.length} fixtures · ${L.plumbing_routes.length} routes`)}
+        ${kv('Furniture', `${plan.furniture.length} items`)}${kv('Lighting', `${plan.lighting.length} fixtures`)}
+        ${kv('Plumbing', `${plan.plumbing_fixtures.length} fixtures · ${plan.plumbing_routes.length} routes`)}
         ${kv('Orientation', `${esc(L.orientation.entrance_wall)} wall · ${esc(L.orientation.compass_label)}`)}</div></div>`;
   }
 
@@ -259,7 +298,7 @@
           <p class="small">Hard failures cap the final score; warnings are soft. GCN · rule weighting is 0.32 · 0.68.</p></div>
       </div>
       <div class="rcard"><h3>Room schedule</h3><table><thead><tr><th>Room</th><th>Size</th><th>Area</th><th>Type</th></tr></thead><tbody>
-        ${L.rooms.map(rm => `<tr><td>${esc(rm.label)}</td><td class="mono">${rm.width.toFixed(1)}×${rm.height.toFixed(1)} ft</td><td class="mono">${rm.area.toFixed(0)} sqft</td><td>${esc(rm.type)}</td></tr>`).join('')}
+        ${L.floor_plans ? L.floor_plans.map(fp => `<h4>${esc(fp.label)}</h4><table><thead><tr><th>Room</th><th>Size</th><th>Area</th><th>Type</th></tr></thead><tbody>${fp.rooms.map(rm => `<tr><td>${esc(rm.label)}</td><td class="mono">${rm.width.toFixed(1)}×${rm.height.toFixed(1)} ft</td><td class="mono">${rm.area.toFixed(0)} sqft</td><td>${esc(rm.type)}</td></tr>`).join('')}</tbody></table>`).join('') : L.rooms.map(rm => `<tr><td>${esc(rm.label)}</td><td class="mono">${rm.width.toFixed(1)}×${rm.height.toFixed(1)} ft</td><td class="mono">${rm.area.toFixed(0)} sqft</td><td>${esc(rm.type)}</td></tr>`).join('')}
         </tbody></table><p class="small">Adjacency: ${L.adjacency.map(p => p.map(esc).join(' ↔ ')).join(', ') || 'none'}</p></div>
       <div class="rcard"><h3>Cost estimate — ${esc(K.profile_label)} <span class="mono muted" style="font-size:12px">${esc(K.currency)}</span></h3>
         <table><thead><tr><th>Item</th><th>Qty</th><th class="num">Rate</th><th class="num">Subtotal</th></tr></thead><tbody>
@@ -269,7 +308,7 @@
         <div><p class="eyebrow">Exclusions</p><ul class="list">${K.exclusions.map(a => `<li>${esc(a)}</li>`).join('')}</ul></div></div>
         ${K.note ? `<p class="note">${esc(K.note)}</p>` : ''}</div>
       <div class="rcard"><h3>Model &amp; limitations</h3>${kv('GCN source', `${esc(G ? G.source : '—')}${G && G.label_name ? ' · ' + esc(G.label_name) : ''}`)}
-        <p class="small">Single-floor; plumbing is Manhattan planning routes; lighting is visualization, not lux; rates require local verification.</p></div>`;
+        <p class="small">Plumbing uses Manhattan planning routes; lighting is visualization, not lux; rates require local verification.</p></div>`;
   }
 
   function renderAll() {
@@ -277,8 +316,9 @@
     render2D(); render3D(); renderInspector(); renderReport();
     $('exportBtn').disabled = false;
     $('projectName').textContent = `${P.bedrooms}BHK · ${Math.round(P.total_area_sqft)} sqft · ${P.style}`;
-    $('projectSub').textContent = `${L.width.toFixed(1)}×${L.height.toFixed(1)} ft · ${L.rooms.length} rooms · ${P.main_entrance_direction} facing`;
-    $('footGen').textContent = `Generated ${L.rooms.length} rooms · ${C.status_label} ${C.score} · GCN ${G ? G.source : '—'}`;
+    const totalRooms = (L.floor_plans || []).reduce((sum, fp) => sum + fp.rooms.length, 0) || L.rooms.length;
+    $('projectSub').textContent = `${L.width.toFixed(1)}×${L.height.toFixed(1)} ft · ${totalRooms} rooms · ${P.floors} floor(s) · ${P.main_entrance_direction} facing`;
+    $('footGen').textContent = `Generated ${totalRooms} rooms across ${P.floors} floor(s) · ${C.status_label} ${C.score} · GCN ${G ? G.source : '—'}`;
     $('footWarn').textContent = C.failed.length ? `${C.failed.length} hard failures` : C.warnings.length ? `${C.warnings.length} warnings` : 'No hard failures';
   }
 

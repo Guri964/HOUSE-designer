@@ -1,11 +1,31 @@
 from typing import Dict, List, Any
 from .rates import get_rate_profile
 
+def _gather_layout_rooms(layout: Dict[str, Any]) -> List[Dict[str, Any]]:
+    # Multi-floor layouts store one plan per floor; aggregate the whole
+    # building so costing covers every floor instead of the active floor only.
+    if layout.get("floor_plans"):
+        rooms: List[Dict[str, Any]] = []
+        for fp in layout["floor_plans"]:
+            rooms.extend(fp.get("rooms", []))
+        return rooms
+    return layout.get("rooms", [])
+
+
+def _gather_layout_lighting(layout: Dict[str, Any]) -> List[Dict[str, Any]]:
+    if layout.get("floor_plans"):
+        lights: List[Dict[str, Any]] = []
+        for fp in layout["floor_plans"]:
+            lights.extend(fp.get("lighting", []))
+        return lights
+    return layout.get("lighting", [])
+
+
 def estimate_cost(layout: Dict[str, Any], profile_id: str = "india_tier2_2025") -> Dict[str, Any]:
     profile = get_rate_profile(profile_id)
     rates = profile["rates"]
     currency = profile["currency"]
-    rooms = layout.get("rooms", [])
+    rooms = _gather_layout_rooms(layout)
     total_area = float(layout.get("built_up_area", sum(r.get("area", 0) for r in rooms)))
     # counts
     type_counts = {}
@@ -17,7 +37,7 @@ def estimate_cost(layout: Dict[str, Any], profile_id: str = "india_tier2_2025") 
     kitchen = type_counts.get("kitchen", 0)
     living = type_counts.get("living_room", 0)
 
-    lighting_count = len(layout.get("lighting", []))
+    lighting_count = len(_gather_layout_lighting(layout))
     # fees
     items: List[Dict[str, Any]] = []
 
