@@ -1,0 +1,2636 @@
+{
+  "compliance": {
+    "checks": [
+      {
+        "id": "bedroom_count",
+        "label": "Bedrooms: expected 3, got 3",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.2
+      },
+      {
+        "id": "bathroom_count",
+        "label": "Bathrooms: expected 2, got 2",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.15
+      },
+      {
+        "id": "kitchen_count",
+        "label": "Kitchen: expected 1, got 1",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.1
+      },
+      {
+        "id": "balcony_count",
+        "label": "Balcony: expected 2, got 2",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.05
+      },
+      {
+        "id": "living_present",
+        "label": "Living room present",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.1
+      },
+      {
+        "id": "total_area",
+        "label": "Total area 1496.8 sqft vs requested 1500 (tolerance 225)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.1
+      },
+      {
+        "id": "min_dims_room_1",
+        "label": "Living Room: 28.12x10.0 ft >= 12x10",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "min_dims_room_2",
+        "label": "Dining Room: 13.75x10.0 ft >= 8x8",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "min_dims_room_3",
+        "label": "Kitchen: 15.13x10.0 ft >= 8x7",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "min_dims_room_4",
+        "label": "Bedroom 1: 19.0x11.26 ft >= 10x10",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "min_dims_room_5",
+        "label": "Bedroom 2: 19.0x11.26 ft >= 10x10",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "min_dims_room_6",
+        "label": "Bedroom 3: 19.0x11.26 ft >= 10x10",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "min_dims_room_7",
+        "label": "Bathroom 1: 17.03x5.0 ft >= 5x6",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "min_dims_room_8",
+        "label": "Bathroom 2: 17.03x5.0 ft >= 5x6",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "min_dims_room_9",
+        "label": "Balcony 1: 11.47x5.0 ft >= 6x4",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "min_dims_room_10",
+        "label": "Balcony 2: 11.47x5.0 ft >= 6x4",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "no_overlap",
+        "label": "No overlapping rooms",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.15
+      },
+      {
+        "id": "connectivity",
+        "label": "Room connectivity: 10/10 rooms reachable",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.05
+      },
+      {
+        "id": "within_bounds",
+        "label": "Rooms within footprint 57.0×26.3 ft",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.05
+      },
+      {
+        "id": "kitchen_adjacency",
+        "label": "Kitchen adjacent to Living/Dining",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.04
+      },
+      {
+        "id": "bathroom_kitchen_separation",
+        "label": "Bathroom separated from Kitchen",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.03
+      },
+      {
+        "id": "bedroom_connectivity",
+        "label": "Bedrooms connected to Living/Bathroom/Corridor",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.04
+      },
+      {
+        "id": "balcony_attachment",
+        "label": "Balcony attached to Bedroom or Living",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.03
+      },
+      {
+        "id": "furniture_room_1",
+        "label": "Living Room furniture valid (4 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      },
+      {
+        "id": "furniture_room_2",
+        "label": "Dining Room furniture valid (2 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      },
+      {
+        "id": "furniture_room_3",
+        "label": "Kitchen furniture valid (3 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      },
+      {
+        "id": "furniture_room_4",
+        "label": "Bedroom 1 furniture valid (3 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      },
+      {
+        "id": "furniture_room_5",
+        "label": "Bedroom 2 furniture valid (3 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      },
+      {
+        "id": "furniture_room_6",
+        "label": "Bedroom 3 furniture valid (3 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      },
+      {
+        "id": "furniture_room_7",
+        "label": "Bathroom 1 furniture valid (3 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      },
+      {
+        "id": "furniture_room_8",
+        "label": "Bathroom 2 furniture valid (3 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      },
+      {
+        "id": "furniture_room_9",
+        "label": "Balcony 1 furniture valid (2 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      },
+      {
+        "id": "furniture_room_10",
+        "label": "Balcony 2 furniture valid (2 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      }
+    ],
+    "failed": [],
+    "gcn_score": 1,
+    "passed": [
+      {
+        "id": "bedroom_count",
+        "label": "Bedrooms: expected 3, got 3",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.2
+      },
+      {
+        "id": "bathroom_count",
+        "label": "Bathrooms: expected 2, got 2",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.15
+      },
+      {
+        "id": "kitchen_count",
+        "label": "Kitchen: expected 1, got 1",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.1
+      },
+      {
+        "id": "balcony_count",
+        "label": "Balcony: expected 2, got 2",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.05
+      },
+      {
+        "id": "living_present",
+        "label": "Living room present",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.1
+      },
+      {
+        "id": "total_area",
+        "label": "Total area 1496.8 sqft vs requested 1500 (tolerance 225)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.1
+      },
+      {
+        "id": "min_dims_room_1",
+        "label": "Living Room: 28.12x10.0 ft >= 12x10",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "min_dims_room_2",
+        "label": "Dining Room: 13.75x10.0 ft >= 8x8",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "min_dims_room_3",
+        "label": "Kitchen: 15.13x10.0 ft >= 8x7",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "min_dims_room_4",
+        "label": "Bedroom 1: 19.0x11.26 ft >= 10x10",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "min_dims_room_5",
+        "label": "Bedroom 2: 19.0x11.26 ft >= 10x10",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "min_dims_room_6",
+        "label": "Bedroom 3: 19.0x11.26 ft >= 10x10",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "min_dims_room_7",
+        "label": "Bathroom 1: 17.03x5.0 ft >= 5x6",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "min_dims_room_8",
+        "label": "Bathroom 2: 17.03x5.0 ft >= 5x6",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "min_dims_room_9",
+        "label": "Balcony 1: 11.47x5.0 ft >= 6x4",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "min_dims_room_10",
+        "label": "Balcony 2: 11.47x5.0 ft >= 6x4",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.02
+      },
+      {
+        "id": "no_overlap",
+        "label": "No overlapping rooms",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.15
+      },
+      {
+        "id": "connectivity",
+        "label": "Room connectivity: 10/10 rooms reachable",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.05
+      },
+      {
+        "id": "within_bounds",
+        "label": "Rooms within footprint 57.0×26.3 ft",
+        "passed": true,
+        "severity": "hard",
+        "weight": 0.05
+      },
+      {
+        "id": "kitchen_adjacency",
+        "label": "Kitchen adjacent to Living/Dining",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.04
+      },
+      {
+        "id": "bathroom_kitchen_separation",
+        "label": "Bathroom separated from Kitchen",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.03
+      },
+      {
+        "id": "bedroom_connectivity",
+        "label": "Bedrooms connected to Living/Bathroom/Corridor",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.04
+      },
+      {
+        "id": "balcony_attachment",
+        "label": "Balcony attached to Bedroom or Living",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.03
+      },
+      {
+        "id": "furniture_room_1",
+        "label": "Living Room furniture valid (4 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      },
+      {
+        "id": "furniture_room_2",
+        "label": "Dining Room furniture valid (2 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      },
+      {
+        "id": "furniture_room_3",
+        "label": "Kitchen furniture valid (3 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      },
+      {
+        "id": "furniture_room_4",
+        "label": "Bedroom 1 furniture valid (3 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      },
+      {
+        "id": "furniture_room_5",
+        "label": "Bedroom 2 furniture valid (3 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      },
+      {
+        "id": "furniture_room_6",
+        "label": "Bedroom 3 furniture valid (3 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      },
+      {
+        "id": "furniture_room_7",
+        "label": "Bathroom 1 furniture valid (3 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      },
+      {
+        "id": "furniture_room_8",
+        "label": "Bathroom 2 furniture valid (3 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      },
+      {
+        "id": "furniture_room_9",
+        "label": "Balcony 1 furniture valid (2 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      },
+      {
+        "id": "furniture_room_10",
+        "label": "Balcony 2 furniture valid (2 items)",
+        "passed": true,
+        "severity": "soft",
+        "weight": 0.01
+      }
+    ],
+    "rule_score": 1,
+    "score": 1,
+    "status": "FULLY_COMPLIANT",
+    "status_label": "Fully Compliant",
+    "suggestions": [],
+    "type_counts": {
+      "balcony": 2,
+      "bathroom": 2,
+      "bedroom": 3,
+      "dining_room": 1,
+      "kitchen": 1,
+      "living_room": 1
+    },
+    "warnings": []
+  },
+  "cost": {
+    "assumptions": [
+      "Profile: India Tier-2 City 2025 Estimate",
+      "Built-up area basis: 1500 sqft",
+      "Rates are approximate 2025 estimates; verify locally before procurement.",
+      "Civil rate per sqft includes structure, brickwork, plaster, roof slab; excludes land cost and approvals.",
+      "Electrical and plumbing are per sqft approximations; final depends on specifications and fixtures.",
+      "Furniture kitchen estimates are modular mid-range; luxury finishes will increase 25-60%.",
+      "Contingency covers wastage and minor variations; not a contractor margin.",
+      "Bathroom counts and fixture types affect sanitary estimate; plumbing routes influence line costs.",
+      "Estimate excludes GST, architect fees, interior designer fees, and site-specific foundations where applicable."
+    ],
+    "built_up_area": 1500,
+    "by_category": [
+      {
+        "category": "Civil",
+        "pct": 68,
+        "total": 2655000
+      },
+      {
+        "category": "Finishes",
+        "pct": 8.6,
+        "total": 337500
+      },
+      {
+        "category": "Services",
+        "pct": 10.6,
+        "total": 415100
+      },
+      {
+        "category": "Furniture & Kitchen",
+        "pct": 7.9,
+        "total": 309000
+      },
+      {
+        "category": "Other",
+        "pct": 4.8,
+        "total": 185830
+      }
+    ],
+    "contingency": 185830,
+    "cost_per_sqft": 2601.62,
+    "currency": "INR",
+    "exclusions": [
+      "Land cost, registration, and statutory approvals",
+      "Boundary wall, gate, and external development beyond plinth",
+      "Lift, STP, and specialized systems if any",
+      "Premium finishes beyond selected rate profile",
+      "Ongoing maintenance and utilities"
+    ],
+    "grand_total": 3902430,
+    "items": [
+      {
+        "category": "Civil",
+        "label": "Civil Construction (structure, walls, roof, foundation)",
+        "quantity": 1500,
+        "rate": 1650,
+        "subtotal": 2475000,
+        "unit": "sqft"
+      },
+      {
+        "category": "Civil",
+        "label": "Flooring & Tiling",
+        "quantity": 1500,
+        "rate": 120,
+        "subtotal": 180000,
+        "unit": "sqft"
+      },
+      {
+        "category": "Finishes",
+        "label": "Wall Finishes & Painting",
+        "quantity": 1500,
+        "rate": 45,
+        "subtotal": 67500,
+        "unit": "sqft"
+      },
+      {
+        "category": "Finishes",
+        "label": "Doors & Windows",
+        "quantity": 1500,
+        "rate": 180,
+        "subtotal": 270000,
+        "unit": "sqft"
+      },
+      {
+        "category": "Services",
+        "label": "Electrical Installations (wiring, switches, DB)",
+        "quantity": 1500,
+        "rate": 110,
+        "subtotal": 165000,
+        "unit": "sqft"
+      },
+      {
+        "category": "Services",
+        "label": "Lighting Fixtures (23 pts)",
+        "quantity": 23,
+        "rate": 2200,
+        "subtotal": 50600,
+        "unit": "fixture"
+      },
+      {
+        "category": "Services",
+        "label": "Plumbing Lines (supply & drainage)",
+        "quantity": 1500,
+        "rate": 95,
+        "subtotal": 142500,
+        "unit": "sqft"
+      },
+      {
+        "category": "Services",
+        "label": "Sanitary Fixtures (2 bathrooms)",
+        "quantity": 2,
+        "rate": 28500,
+        "subtotal": 57000,
+        "unit": "bathroom"
+      },
+      {
+        "category": "Furniture & Kitchen",
+        "label": "Kitchen Components (1 unit)",
+        "quantity": 1,
+        "rate": 85000,
+        "subtotal": 85000,
+        "unit": "unit"
+      },
+      {
+        "category": "Furniture & Kitchen",
+        "label": "Bedroom Furniture (3 bedrooms)",
+        "quantity": 3,
+        "rate": 45000,
+        "subtotal": 135000,
+        "unit": "bedroom"
+      },
+      {
+        "category": "Furniture & Kitchen",
+        "label": "Living Room Furniture",
+        "quantity": 1,
+        "rate": 65000,
+        "subtotal": 65000,
+        "unit": "unit"
+      },
+      {
+        "category": "Furniture & Kitchen",
+        "label": "Balcony Treatment (2 units)",
+        "quantity": 2,
+        "rate": 12000,
+        "subtotal": 24000,
+        "unit": "unit"
+      },
+      {
+        "category": "Other",
+        "label": "Contingency (5%)",
+        "quantity": 1,
+        "rate": 185830,
+        "subtotal": 185830,
+        "unit": "lump"
+      }
+    ],
+    "note": "Approximate planning estimate only — not a binding quotation. Confirm with a licensed contractor and updated local Schedule of Rates.",
+    "profile_id": "india_tier2_2025",
+    "profile_label": "India Tier-2 City 2025 Estimate",
+    "subtotal": 3716600,
+    "type_counts": {
+      "balcony": 2,
+      "bathroom": 2,
+      "bedroom": 3,
+      "dining_room": 1,
+      "kitchen": 1,
+      "living_room": 1
+    }
+  },
+  "gcn": {
+    "in_channels": 7,
+    "is_claude_model": true,
+    "label": 1,
+    "label_name": "Compliant",
+    "num_edges": 18,
+    "num_nodes": 10,
+    "probs": [
+      0,
+      1
+    ],
+    "score": 1,
+    "source": "gcn_trained_claude"
+  },
+  "layout": {
+    "adjacency": [
+      [
+        "room_1",
+        "room_2"
+      ],
+      [
+        "room_1",
+        "room_4"
+      ],
+      [
+        "room_1",
+        "room_5"
+      ],
+      [
+        "room_2",
+        "room_3"
+      ],
+      [
+        "room_2",
+        "room_5"
+      ],
+      [
+        "room_2",
+        "room_6"
+      ],
+      [
+        "room_3",
+        "room_6"
+      ],
+      [
+        "room_4",
+        "room_5"
+      ],
+      [
+        "room_4",
+        "room_7"
+      ],
+      [
+        "room_4",
+        "room_8"
+      ],
+      [
+        "room_5",
+        "room_6"
+      ],
+      [
+        "room_5",
+        "room_8"
+      ],
+      [
+        "room_5",
+        "room_9"
+      ],
+      [
+        "room_6",
+        "room_9"
+      ],
+      [
+        "room_6",
+        "room_10"
+      ],
+      [
+        "room_7",
+        "room_8"
+      ],
+      [
+        "room_8",
+        "room_9"
+      ],
+      [
+        "room_9",
+        "room_10"
+      ]
+    ],
+    "built_up_area": 1500,
+    "doors": [
+      {
+        "id": "room_1_door_1",
+        "wall": "south",
+        "width": 3,
+        "x": 14.06,
+        "y": 10
+      },
+      {
+        "id": "room_2_door_1",
+        "wall": "south",
+        "width": 3,
+        "x": 35,
+        "y": 10
+      },
+      {
+        "id": "room_3_door_1",
+        "wall": "south",
+        "width": 3,
+        "x": 49.43,
+        "y": 10
+      },
+      {
+        "id": "room_4_door_1",
+        "wall": "south",
+        "width": 3,
+        "x": 9.5,
+        "y": 21.26
+      },
+      {
+        "id": "room_5_door_1",
+        "wall": "south",
+        "width": 3,
+        "x": 28.5,
+        "y": 21.26
+      },
+      {
+        "id": "room_6_door_1",
+        "wall": "south",
+        "width": 3,
+        "x": 47.5,
+        "y": 21.26
+      },
+      {
+        "id": "room_7_door_1",
+        "wall": "south",
+        "width": 3,
+        "x": 8.52,
+        "y": 26.26
+      },
+      {
+        "id": "room_8_door_1",
+        "wall": "south",
+        "width": 3,
+        "x": 25.55,
+        "y": 26.26
+      },
+      {
+        "id": "room_9_door_1",
+        "wall": "south",
+        "width": 3,
+        "x": 39.8,
+        "y": 26.26
+      },
+      {
+        "id": "room_10_door_1",
+        "wall": "south",
+        "width": 3,
+        "x": 51.27,
+        "y": 26.26
+      }
+    ],
+    "furniture": [
+      {
+        "height": 3,
+        "id": "room_1_fur_1",
+        "label": "Sofa 3-Seater",
+        "room_id": "room_1",
+        "room_type": "living_room",
+        "rotation": 0,
+        "type": "sofa",
+        "width": 7,
+        "x": 10.56,
+        "y": 0.6
+      },
+      {
+        "height": 3.5,
+        "id": "room_1_fur_2",
+        "label": "Armchair",
+        "room_id": "room_1",
+        "room_type": "living_room",
+        "rotation": 0,
+        "type": "sofa_single",
+        "width": 3,
+        "x": 24.02,
+        "y": 3.5
+      },
+      {
+        "height": 2.5,
+        "id": "room_1_fur_3",
+        "label": "Coffee Table",
+        "room_id": "room_1",
+        "room_type": "living_room",
+        "rotation": 0,
+        "type": "coffee_table",
+        "width": 4,
+        "x": 0.6,
+        "y": 3.75
+      },
+      {
+        "height": 1.8,
+        "id": "room_1_fur_4",
+        "label": "TV Unit",
+        "room_id": "room_1",
+        "room_type": "living_room",
+        "rotation": 0,
+        "type": "tv_unit",
+        "width": 5.5,
+        "x": 0.6,
+        "y": 0.6
+      },
+      {
+        "height": 4,
+        "id": "room_2_fur_1",
+        "label": "Dining Table 4S",
+        "room_id": "room_2",
+        "room_type": "dining_room",
+        "rotation": 0,
+        "type": "dining_table",
+        "width": 5.5,
+        "x": 32.25,
+        "y": 0.6
+      },
+      {
+        "height": 1.6,
+        "id": "room_2_fur_2",
+        "label": "Chair",
+        "room_id": "room_2",
+        "room_type": "dining_room",
+        "rotation": 0,
+        "type": "chair",
+        "width": 1.6,
+        "x": 39.67,
+        "y": 4.2
+      },
+      {
+        "height": 2.2,
+        "id": "room_3_fur_1",
+        "label": "Kitchen Counter",
+        "room_id": "room_3",
+        "room_type": "kitchen",
+        "rotation": 0,
+        "type": "counter",
+        "width": 8,
+        "x": 45.43,
+        "y": 0.6
+      },
+      {
+        "height": 2.8,
+        "id": "room_3_fur_2",
+        "label": "Refrigerator",
+        "room_id": "room_3",
+        "room_type": "kitchen",
+        "rotation": 0,
+        "type": "refrigerator",
+        "width": 2.8,
+        "x": 42.47,
+        "y": 6.6
+      },
+      {
+        "height": 3.5,
+        "id": "room_3_fur_3",
+        "label": "Dining Nook",
+        "room_id": "room_3",
+        "room_type": "kitchen",
+        "rotation": 0,
+        "type": "dining_table",
+        "width": 3.5,
+        "x": 47.68,
+        "y": 5.9
+      },
+      {
+        "height": 8,
+        "id": "room_4_fur_1",
+        "label": "Double Bed",
+        "room_id": "room_4",
+        "room_type": "bedroom",
+        "rotation": 0,
+        "type": "bed",
+        "width": 6.5,
+        "x": 6.25,
+        "y": 10.6
+      },
+      {
+        "height": 3.5,
+        "id": "room_4_fur_2",
+        "label": "Study Table",
+        "room_id": "room_4",
+        "room_type": "bedroom",
+        "rotation": 0,
+        "type": "study_table",
+        "width": 2,
+        "x": 14.9,
+        "y": 14.63
+      },
+      {
+        "height": 1.5,
+        "id": "room_4_fur_3",
+        "label": "Side Table",
+        "room_id": "room_4",
+        "room_type": "bedroom",
+        "rotation": 0,
+        "type": "side_table",
+        "width": 1.5,
+        "x": 0.6,
+        "y": 14.88
+      },
+      {
+        "height": 8,
+        "id": "room_5_fur_1",
+        "label": "Double Bed",
+        "room_id": "room_5",
+        "room_type": "bedroom",
+        "rotation": 0,
+        "type": "bed",
+        "width": 6.5,
+        "x": 25.25,
+        "y": 10.6
+      },
+      {
+        "height": 3.5,
+        "id": "room_5_fur_2",
+        "label": "Study Table",
+        "room_id": "room_5",
+        "room_type": "bedroom",
+        "rotation": 0,
+        "type": "study_table",
+        "width": 2,
+        "x": 33.9,
+        "y": 14.63
+      },
+      {
+        "height": 1.5,
+        "id": "room_5_fur_3",
+        "label": "Side Table",
+        "room_id": "room_5",
+        "room_type": "bedroom",
+        "rotation": 0,
+        "type": "side_table",
+        "width": 1.5,
+        "x": 19.6,
+        "y": 14.88
+      },
+      {
+        "height": 8,
+        "id": "room_6_fur_1",
+        "label": "Double Bed",
+        "room_id": "room_6",
+        "room_type": "bedroom",
+        "rotation": 0,
+        "type": "bed",
+        "width": 6.5,
+        "x": 44.25,
+        "y": 10.6
+      },
+      {
+        "height": 3.5,
+        "id": "room_6_fur_2",
+        "label": "Study Table",
+        "room_id": "room_6",
+        "room_type": "bedroom",
+        "rotation": 0,
+        "type": "study_table",
+        "width": 2,
+        "x": 52.9,
+        "y": 14.63
+      },
+      {
+        "height": 1.5,
+        "id": "room_6_fur_3",
+        "label": "Side Table",
+        "room_id": "room_6",
+        "room_type": "bedroom",
+        "rotation": 0,
+        "type": "side_table",
+        "width": 1.5,
+        "x": 38.6,
+        "y": 14.88
+      },
+      {
+        "height": 2.2,
+        "id": "room_7_fur_1",
+        "label": "Toilet",
+        "room_id": "room_7",
+        "room_type": "bathroom",
+        "rotation": 0,
+        "type": "toilet",
+        "width": 1.8,
+        "x": 7.62,
+        "y": 21.86
+      },
+      {
+        "height": 2,
+        "id": "room_7_fur_2",
+        "label": "Washbasin",
+        "room_id": "room_7",
+        "room_type": "bathroom",
+        "rotation": 0,
+        "type": "washbasin",
+        "width": 1.4,
+        "x": 14.43,
+        "y": 23.06
+      },
+      {
+        "height": 2.5,
+        "id": "room_7_fur_3",
+        "label": "Shower",
+        "room_id": "room_7",
+        "room_type": "bathroom",
+        "rotation": 0,
+        "type": "shower",
+        "width": 2.5,
+        "x": 0.6,
+        "y": 22.51
+      },
+      {
+        "height": 2.2,
+        "id": "room_8_fur_1",
+        "label": "Toilet",
+        "room_id": "room_8",
+        "room_type": "bathroom",
+        "rotation": 0,
+        "type": "toilet",
+        "width": 1.8,
+        "x": 24.65,
+        "y": 21.86
+      },
+      {
+        "height": 2,
+        "id": "room_8_fur_2",
+        "label": "Washbasin",
+        "room_id": "room_8",
+        "room_type": "bathroom",
+        "rotation": 0,
+        "type": "washbasin",
+        "width": 1.4,
+        "x": 31.46,
+        "y": 23.06
+      },
+      {
+        "height": 2.5,
+        "id": "room_8_fur_3",
+        "label": "Shower",
+        "room_id": "room_8",
+        "room_type": "bathroom",
+        "rotation": 0,
+        "type": "shower",
+        "width": 2.5,
+        "x": 17.63,
+        "y": 22.51
+      },
+      {
+        "height": 1.8,
+        "id": "room_9_fur_1",
+        "label": "Outdoor Chair",
+        "room_id": "room_9",
+        "room_type": "balcony",
+        "rotation": 0,
+        "type": "chair",
+        "width": 1.8,
+        "x": 38.9,
+        "y": 21.86
+      },
+      {
+        "height": 1.5,
+        "id": "room_9_fur_2",
+        "label": "Side Table",
+        "room_id": "room_9",
+        "room_type": "balcony",
+        "rotation": 0,
+        "type": "table_small",
+        "width": 1.5,
+        "x": 43.43,
+        "y": 23.01
+      },
+      {
+        "height": 1.8,
+        "id": "room_10_fur_1",
+        "label": "Outdoor Chair",
+        "room_id": "room_10",
+        "room_type": "balcony",
+        "rotation": 0,
+        "type": "chair",
+        "width": 1.8,
+        "x": 50.37,
+        "y": 21.86
+      },
+      {
+        "height": 1.5,
+        "id": "room_10_fur_2",
+        "label": "Side Table",
+        "room_id": "room_10",
+        "room_type": "balcony",
+        "rotation": 0,
+        "type": "table_small",
+        "width": 1.5,
+        "x": 54.9,
+        "y": 23.01
+      }
+    ],
+    "height": 26.26,
+    "lighting": [
+      {
+        "id": "room_1_lt_1",
+        "label": "Central Ceiling",
+        "room_id": "room_1",
+        "type": "ceiling_light",
+        "x": 14.06,
+        "y": 5
+      },
+      {
+        "id": "room_1_lt_2",
+        "label": "Recessed",
+        "room_id": "room_1",
+        "type": "recessed_light",
+        "x": 8.44,
+        "y": 3.5
+      },
+      {
+        "id": "room_1_lt_3",
+        "label": "Recessed",
+        "room_id": "room_1",
+        "type": "recessed_light",
+        "x": 19.68,
+        "y": 6.5
+      },
+      {
+        "id": "room_1_lt_4",
+        "label": "Pendant",
+        "room_id": "room_1",
+        "type": "pendant_light",
+        "x": 21.09,
+        "y": 3
+      },
+      {
+        "id": "room_2_lt_1",
+        "label": "Dining Pendant",
+        "room_id": "room_2",
+        "type": "pendant_light",
+        "x": 35,
+        "y": 3.5
+      },
+      {
+        "id": "room_2_lt_2",
+        "label": "Recessed",
+        "room_id": "room_2",
+        "type": "recessed_light",
+        "x": 32.25,
+        "y": 3.5
+      },
+      {
+        "id": "room_2_lt_3",
+        "label": "Recessed",
+        "room_id": "room_2",
+        "type": "recessed_light",
+        "x": 37.75,
+        "y": 6.5
+      },
+      {
+        "id": "room_3_lt_1",
+        "label": "Kitchen Task Light",
+        "room_id": "room_3",
+        "type": "recessed_light",
+        "x": 46.41,
+        "y": 3.5
+      },
+      {
+        "id": "room_3_lt_2",
+        "label": "Kitchen Task Light",
+        "room_id": "room_3",
+        "type": "recessed_light",
+        "x": 52.46,
+        "y": 6.5
+      },
+      {
+        "id": "room_3_lt_3",
+        "label": "Kitchen Ceiling",
+        "room_id": "room_3",
+        "type": "ceiling_light",
+        "x": 49.43,
+        "y": 5
+      },
+      {
+        "id": "room_4_lt_1",
+        "label": "Ceiling",
+        "room_id": "room_4",
+        "type": "ceiling_light",
+        "x": 9.5,
+        "y": 15.63
+      },
+      {
+        "id": "room_4_lt_2",
+        "label": "Bedside Pendant",
+        "room_id": "room_4",
+        "type": "pendant_light",
+        "x": 5.7,
+        "y": 16.19
+      },
+      {
+        "id": "room_4_lt_3",
+        "label": "Bedside Pendant",
+        "room_id": "room_4",
+        "type": "pendant_light",
+        "x": 13.3,
+        "y": 16.19
+      },
+      {
+        "id": "room_5_lt_1",
+        "label": "Ceiling",
+        "room_id": "room_5",
+        "type": "ceiling_light",
+        "x": 28.5,
+        "y": 15.63
+      },
+      {
+        "id": "room_5_lt_2",
+        "label": "Bedside Pendant",
+        "room_id": "room_5",
+        "type": "pendant_light",
+        "x": 24.7,
+        "y": 16.19
+      },
+      {
+        "id": "room_5_lt_3",
+        "label": "Bedside Pendant",
+        "room_id": "room_5",
+        "type": "pendant_light",
+        "x": 32.3,
+        "y": 16.19
+      },
+      {
+        "id": "room_6_lt_1",
+        "label": "Ceiling",
+        "room_id": "room_6",
+        "type": "ceiling_light",
+        "x": 47.5,
+        "y": 15.63
+      },
+      {
+        "id": "room_6_lt_2",
+        "label": "Bedside Pendant",
+        "room_id": "room_6",
+        "type": "pendant_light",
+        "x": 43.7,
+        "y": 16.19
+      },
+      {
+        "id": "room_6_lt_3",
+        "label": "Bedside Pendant",
+        "room_id": "room_6",
+        "type": "pendant_light",
+        "x": 51.3,
+        "y": 16.19
+      },
+      {
+        "id": "room_7_lt_1",
+        "label": "Bath Ceiling",
+        "room_id": "room_7",
+        "type": "ceiling_light",
+        "x": 8.52,
+        "y": 23.76
+      },
+      {
+        "id": "room_8_lt_1",
+        "label": "Bath Ceiling",
+        "room_id": "room_8",
+        "type": "ceiling_light",
+        "x": 25.55,
+        "y": 23.76
+      },
+      {
+        "id": "room_9_lt_1",
+        "label": "Balcony Wall",
+        "room_id": "room_9",
+        "type": "wall_light",
+        "x": 39.8,
+        "y": 21.96
+      },
+      {
+        "id": "room_10_lt_1",
+        "label": "Balcony Wall",
+        "room_id": "room_10",
+        "type": "wall_light",
+        "x": 51.27,
+        "y": 21.96
+      }
+    ],
+    "metadata": {
+      "entrance_direction": "north_east",
+      "generation_notes": [
+        "Row-band tiled 10 rooms across 57.0 x 26.3 ft footprint",
+        "Actual room area sum 1496.8 vs requested 1500.0",
+        "Adjacency pairs: 18"
+      ],
+      "parsed_input": {
+        "balconies": 2,
+        "bathrooms": 2,
+        "bedrooms": 3,
+        "dining_rooms": 1,
+        "explicit": {
+          "area": true,
+          "balcony": true,
+          "bathrooms": true,
+          "bedrooms": true,
+          "direction": true,
+          "kitchen_type": true
+        },
+        "floors": 1,
+        "inferred_defaults": {
+          "area": false,
+          "direction": false
+        },
+        "kitchen_type": "open",
+        "kitchens": 1,
+        "living_rooms": 1,
+        "main_entrance_direction": "north_east",
+        "original_text": "Design a modern single-floor 3BHK residential house\nwith a built-up area of approximately 1500 square feet.\n\nInclude three bedrooms, two bathrooms, two balconies,\na spacious living room, an open modular kitchen,\nand a dining area.\n\nPrioritize efficient room placement, natural lighting,\ncross-ventilation, practical circulation space,\nand a northeast-facing main entrance.\n\nGenerate a detailed 2D floorplan, an interactive\n3D digital twin, architectural validation results,\nand an estimated construction cost breakdown.",
+        "style": "modern",
+        "total_area_sqft": 1500,
+        "wants_furniture": true,
+        "wants_lighting": true,
+        "wants_plumbing": true,
+        "warnings": []
+      },
+      "style": "modern",
+      "warnings": []
+    },
+    "orientation": {
+      "compass_label": "NORTH-EAST",
+      "entrance_wall": "top_right",
+      "height": 26.26,
+      "north_angle_deg": 45,
+      "note": "Top of 2D plan is NORTH (0°). Entrance on top_right wall per north_east facing.",
+      "requested_direction": "north_east",
+      "width": 57
+    },
+    "plumbing_fixtures": [
+      {
+        "id": "room_3_pl_1",
+        "label": "Kitchen Sink",
+        "room_id": "room_3",
+        "type": "kitchen_sink",
+        "x": 52.46,
+        "y": 1.2
+      },
+      {
+        "id": "room_3_pl_2",
+        "label": "Water Inlet",
+        "room_id": "room_3",
+        "type": "water_inlet",
+        "x": 46.41,
+        "y": 1.2
+      },
+      {
+        "id": "room_7_pl_1",
+        "label": "Toilet",
+        "room_id": "room_7",
+        "type": "toilet",
+        "x": 14.83,
+        "y": 23.86
+      },
+      {
+        "id": "room_7_pl_2",
+        "label": "Washbasin",
+        "room_id": "room_7",
+        "type": "washbasin",
+        "x": 1.6,
+        "y": 22.86
+      },
+      {
+        "id": "room_7_pl_3",
+        "label": "Shower",
+        "room_id": "room_7",
+        "type": "shower",
+        "x": 1.6,
+        "y": 23.46
+      },
+      {
+        "id": "room_8_pl_1",
+        "label": "Toilet",
+        "room_id": "room_8",
+        "type": "toilet",
+        "x": 31.86,
+        "y": 23.86
+      },
+      {
+        "id": "room_8_pl_2",
+        "label": "Washbasin",
+        "room_id": "room_8",
+        "type": "washbasin",
+        "x": 18.63,
+        "y": 22.86
+      },
+      {
+        "id": "room_8_pl_3",
+        "label": "Shower",
+        "room_id": "room_8",
+        "type": "shower",
+        "x": 18.63,
+        "y": 23.46
+      },
+      {
+        "id": "room_9_pl_1",
+        "label": "Balcony Drain",
+        "room_id": "room_9",
+        "type": "drain",
+        "x": 39.8,
+        "y": 23.76
+      },
+      {
+        "id": "room_10_pl_1",
+        "label": "Balcony Drain",
+        "room_id": "room_10",
+        "type": "drain",
+        "x": 51.27,
+        "y": 23.76
+      }
+    ],
+    "plumbing_routes": [
+      {
+        "from_fixture": "room_7_pl_1",
+        "id": "route_room_7_pl_1_to_room_7_pl_2",
+        "kind": "drainage",
+        "path": [
+          [
+            14.83,
+            23.86
+          ],
+          [
+            1.6,
+            22.86
+          ]
+        ],
+        "to_fixture": "room_7_pl_2"
+      },
+      {
+        "from_fixture": "room_7_pl_2",
+        "id": "route_room_7_pl_2_to_room_7_pl_3",
+        "kind": "water_supply",
+        "path": [
+          [
+            1.6,
+            22.86
+          ],
+          [
+            1.6,
+            23.46
+          ]
+        ],
+        "to_fixture": "room_7_pl_3"
+      },
+      {
+        "from_fixture": "room_8_pl_1",
+        "id": "route_room_8_pl_1_to_room_8_pl_2",
+        "kind": "drainage",
+        "path": [
+          [
+            31.86,
+            23.86
+          ],
+          [
+            18.63,
+            22.86
+          ]
+        ],
+        "to_fixture": "room_8_pl_2"
+      },
+      {
+        "from_fixture": "room_8_pl_2",
+        "id": "route_room_8_pl_2_to_room_8_pl_3",
+        "kind": "water_supply",
+        "path": [
+          [
+            18.63,
+            22.86
+          ],
+          [
+            18.63,
+            23.46
+          ]
+        ],
+        "to_fixture": "room_8_pl_3"
+      },
+      {
+        "from_fixture": "room_3_pl_1",
+        "id": "route_room_3_pl_1_to_room_8_pl_1_main",
+        "kind": "water_supply",
+        "path": [
+          [
+            52.46,
+            1.2
+          ],
+          [
+            42.16,
+            1.2
+          ],
+          [
+            42.16,
+            23.86
+          ],
+          [
+            31.86,
+            23.86
+          ]
+        ],
+        "to_fixture": "room_8_pl_1"
+      },
+      {
+        "from_fixture": "room_7_pl_1",
+        "id": "route_room_7_pl_1_to_room_8_pl_1_interbath",
+        "kind": "drainage",
+        "path": [
+          [
+            14.83,
+            23.86
+          ],
+          [
+            23.345,
+            23.86
+          ],
+          [
+            23.345,
+            23.86
+          ],
+          [
+            31.86,
+            23.86
+          ]
+        ],
+        "to_fixture": "room_8_pl_1"
+      }
+    ],
+    "rooms": [
+      {
+        "area": 281.2,
+        "doors": [
+          {
+            "id": "room_1_door_1",
+            "wall": "south",
+            "width": 3,
+            "x": 14.06,
+            "y": 10
+          }
+        ],
+        "furniture": [
+          {
+            "height": 3,
+            "id": "room_1_fur_1",
+            "label": "Sofa 3-Seater",
+            "rotation": 0,
+            "type": "sofa",
+            "width": 7,
+            "x": 10.56,
+            "y": 0.6
+          },
+          {
+            "height": 3.5,
+            "id": "room_1_fur_2",
+            "label": "Armchair",
+            "rotation": 0,
+            "type": "sofa_single",
+            "width": 3,
+            "x": 24.02,
+            "y": 3.5
+          },
+          {
+            "height": 2.5,
+            "id": "room_1_fur_3",
+            "label": "Coffee Table",
+            "rotation": 0,
+            "type": "coffee_table",
+            "width": 4,
+            "x": 0.6,
+            "y": 3.75
+          },
+          {
+            "height": 1.8,
+            "id": "room_1_fur_4",
+            "label": "TV Unit",
+            "rotation": 0,
+            "type": "tv_unit",
+            "width": 5.5,
+            "x": 0.6,
+            "y": 0.6
+          }
+        ],
+        "height": 10,
+        "id": "room_1",
+        "label": "Living Room",
+        "lighting": [
+          {
+            "id": "room_1_lt_1",
+            "label": "Central Ceiling",
+            "room_id": "room_1",
+            "type": "ceiling_light",
+            "x": 14.06,
+            "y": 5
+          },
+          {
+            "id": "room_1_lt_2",
+            "label": "Recessed",
+            "room_id": "room_1",
+            "type": "recessed_light",
+            "x": 8.44,
+            "y": 3.5
+          },
+          {
+            "id": "room_1_lt_3",
+            "label": "Recessed",
+            "room_id": "room_1",
+            "type": "recessed_light",
+            "x": 19.68,
+            "y": 6.5
+          },
+          {
+            "id": "room_1_lt_4",
+            "label": "Pendant",
+            "room_id": "room_1",
+            "type": "pendant_light",
+            "x": 21.09,
+            "y": 3
+          }
+        ],
+        "plumbing": [],
+        "target_area": 273.48,
+        "type": "living_room",
+        "width": 28.12,
+        "windows": [
+          {
+            "id": "room_1_win_1",
+            "wall": "north",
+            "width": 4,
+            "x": 14.06,
+            "y": 0
+          }
+        ],
+        "x": 0,
+        "y": 0
+      },
+      {
+        "area": 137.5,
+        "doors": [
+          {
+            "id": "room_2_door_1",
+            "wall": "south",
+            "width": 3,
+            "x": 35,
+            "y": 10
+          }
+        ],
+        "furniture": [
+          {
+            "height": 4,
+            "id": "room_2_fur_1",
+            "label": "Dining Table 4S",
+            "rotation": 0,
+            "type": "dining_table",
+            "width": 5.5,
+            "x": 32.25,
+            "y": 0.6
+          },
+          {
+            "height": 1.6,
+            "id": "room_2_fur_2",
+            "label": "Chair",
+            "rotation": 0,
+            "type": "chair",
+            "width": 1.6,
+            "x": 39.67,
+            "y": 4.2
+          }
+        ],
+        "height": 10,
+        "id": "room_2",
+        "label": "Dining Room",
+        "lighting": [
+          {
+            "id": "room_2_lt_1",
+            "label": "Dining Pendant",
+            "room_id": "room_2",
+            "type": "pendant_light",
+            "x": 35,
+            "y": 3.5
+          },
+          {
+            "id": "room_2_lt_2",
+            "label": "Recessed",
+            "room_id": "room_2",
+            "type": "recessed_light",
+            "x": 32.25,
+            "y": 3.5
+          },
+          {
+            "id": "room_2_lt_3",
+            "label": "Recessed",
+            "room_id": "room_2",
+            "type": "recessed_light",
+            "x": 37.75,
+            "y": 6.5
+          }
+        ],
+        "plumbing": [],
+        "target_area": 133.71,
+        "type": "dining_room",
+        "width": 13.75,
+        "windows": [],
+        "x": 28.12,
+        "y": 0
+      },
+      {
+        "area": 151.3,
+        "doors": [
+          {
+            "id": "room_3_door_1",
+            "wall": "south",
+            "width": 3,
+            "x": 49.43,
+            "y": 10
+          }
+        ],
+        "furniture": [
+          {
+            "height": 2.2,
+            "id": "room_3_fur_1",
+            "label": "Kitchen Counter",
+            "rotation": 0,
+            "type": "counter",
+            "width": 8,
+            "x": 45.43,
+            "y": 0.6
+          },
+          {
+            "height": 2.8,
+            "id": "room_3_fur_2",
+            "label": "Refrigerator",
+            "rotation": 0,
+            "type": "refrigerator",
+            "width": 2.8,
+            "x": 42.47,
+            "y": 6.6
+          },
+          {
+            "height": 3.5,
+            "id": "room_3_fur_3",
+            "label": "Dining Nook",
+            "rotation": 0,
+            "type": "dining_table",
+            "width": 3.5,
+            "x": 47.68,
+            "y": 5.9
+          }
+        ],
+        "height": 10,
+        "id": "room_3",
+        "label": "Kitchen",
+        "lighting": [
+          {
+            "id": "room_3_lt_1",
+            "label": "Kitchen Task Light",
+            "room_id": "room_3",
+            "type": "recessed_light",
+            "x": 46.41,
+            "y": 3.5
+          },
+          {
+            "id": "room_3_lt_2",
+            "label": "Kitchen Task Light",
+            "room_id": "room_3",
+            "type": "recessed_light",
+            "x": 52.46,
+            "y": 6.5
+          },
+          {
+            "id": "room_3_lt_3",
+            "label": "Kitchen Ceiling",
+            "room_id": "room_3",
+            "type": "ceiling_light",
+            "x": 49.43,
+            "y": 5
+          }
+        ],
+        "plumbing": [
+          {
+            "id": "room_3_pl_1",
+            "label": "Kitchen Sink",
+            "room_id": "room_3",
+            "type": "kitchen_sink",
+            "x": 52.46,
+            "y": 1.2
+          },
+          {
+            "id": "room_3_pl_2",
+            "label": "Water Inlet",
+            "room_id": "room_3",
+            "type": "water_inlet",
+            "x": 46.41,
+            "y": 1.2
+          }
+        ],
+        "target_area": 147.08,
+        "type": "kitchen",
+        "width": 15.13,
+        "windows": [
+          {
+            "id": "room_3_win_1",
+            "wall": "north",
+            "width": 4,
+            "x": 49.43,
+            "y": 0
+          }
+        ],
+        "x": 41.87,
+        "y": 0
+      },
+      {
+        "area": 213.94,
+        "doors": [
+          {
+            "id": "room_4_door_1",
+            "wall": "south",
+            "width": 3,
+            "x": 9.5,
+            "y": 21.26
+          }
+        ],
+        "furniture": [
+          {
+            "height": 8,
+            "id": "room_4_fur_1",
+            "label": "Double Bed",
+            "rotation": 0,
+            "type": "bed",
+            "width": 6.5,
+            "x": 6.25,
+            "y": 10.6
+          },
+          {
+            "height": 3.5,
+            "id": "room_4_fur_2",
+            "label": "Study Table",
+            "rotation": 0,
+            "type": "study_table",
+            "width": 2,
+            "x": 14.9,
+            "y": 14.63
+          },
+          {
+            "height": 1.5,
+            "id": "room_4_fur_3",
+            "label": "Side Table",
+            "rotation": 0,
+            "type": "side_table",
+            "width": 1.5,
+            "x": 0.6,
+            "y": 14.88
+          }
+        ],
+        "height": 11.26,
+        "id": "room_4",
+        "label": "Bedroom 1",
+        "lighting": [
+          {
+            "id": "room_4_lt_1",
+            "label": "Ceiling",
+            "room_id": "room_4",
+            "type": "ceiling_light",
+            "x": 9.5,
+            "y": 15.63
+          },
+          {
+            "id": "room_4_lt_2",
+            "label": "Bedside Pendant",
+            "room_id": "room_4",
+            "type": "pendant_light",
+            "x": 5.7,
+            "y": 16.19
+          },
+          {
+            "id": "room_4_lt_3",
+            "label": "Bedside Pendant",
+            "room_id": "room_4",
+            "type": "pendant_light",
+            "x": 13.3,
+            "y": 16.19
+          }
+        ],
+        "plumbing": [],
+        "target_area": 213.93,
+        "type": "bedroom",
+        "width": 19,
+        "windows": [
+          {
+            "id": "room_4_win_1",
+            "wall": "north",
+            "width": 4,
+            "x": 9.5,
+            "y": 10
+          }
+        ],
+        "x": 0,
+        "y": 10
+      },
+      {
+        "area": 213.94,
+        "doors": [
+          {
+            "id": "room_5_door_1",
+            "wall": "south",
+            "width": 3,
+            "x": 28.5,
+            "y": 21.26
+          }
+        ],
+        "furniture": [
+          {
+            "height": 8,
+            "id": "room_5_fur_1",
+            "label": "Double Bed",
+            "rotation": 0,
+            "type": "bed",
+            "width": 6.5,
+            "x": 25.25,
+            "y": 10.6
+          },
+          {
+            "height": 3.5,
+            "id": "room_5_fur_2",
+            "label": "Study Table",
+            "rotation": 0,
+            "type": "study_table",
+            "width": 2,
+            "x": 33.9,
+            "y": 14.63
+          },
+          {
+            "height": 1.5,
+            "id": "room_5_fur_3",
+            "label": "Side Table",
+            "rotation": 0,
+            "type": "side_table",
+            "width": 1.5,
+            "x": 19.6,
+            "y": 14.88
+          }
+        ],
+        "height": 11.26,
+        "id": "room_5",
+        "label": "Bedroom 2",
+        "lighting": [
+          {
+            "id": "room_5_lt_1",
+            "label": "Ceiling",
+            "room_id": "room_5",
+            "type": "ceiling_light",
+            "x": 28.5,
+            "y": 15.63
+          },
+          {
+            "id": "room_5_lt_2",
+            "label": "Bedside Pendant",
+            "room_id": "room_5",
+            "type": "pendant_light",
+            "x": 24.7,
+            "y": 16.19
+          },
+          {
+            "id": "room_5_lt_3",
+            "label": "Bedside Pendant",
+            "room_id": "room_5",
+            "type": "pendant_light",
+            "x": 32.3,
+            "y": 16.19
+          }
+        ],
+        "plumbing": [],
+        "target_area": 213.93,
+        "type": "bedroom",
+        "width": 19,
+        "windows": [
+          {
+            "id": "room_5_win_1",
+            "wall": "north",
+            "width": 4,
+            "x": 28.5,
+            "y": 10
+          }
+        ],
+        "x": 19,
+        "y": 10
+      },
+      {
+        "area": 213.94,
+        "doors": [
+          {
+            "id": "room_6_door_1",
+            "wall": "south",
+            "width": 3,
+            "x": 47.5,
+            "y": 21.26
+          }
+        ],
+        "furniture": [
+          {
+            "height": 8,
+            "id": "room_6_fur_1",
+            "label": "Double Bed",
+            "rotation": 0,
+            "type": "bed",
+            "width": 6.5,
+            "x": 44.25,
+            "y": 10.6
+          },
+          {
+            "height": 3.5,
+            "id": "room_6_fur_2",
+            "label": "Study Table",
+            "rotation": 0,
+            "type": "study_table",
+            "width": 2,
+            "x": 52.9,
+            "y": 14.63
+          },
+          {
+            "height": 1.5,
+            "id": "room_6_fur_3",
+            "label": "Side Table",
+            "rotation": 0,
+            "type": "side_table",
+            "width": 1.5,
+            "x": 38.6,
+            "y": 14.88
+          }
+        ],
+        "height": 11.26,
+        "id": "room_6",
+        "label": "Bedroom 3",
+        "lighting": [
+          {
+            "id": "room_6_lt_1",
+            "label": "Ceiling",
+            "room_id": "room_6",
+            "type": "ceiling_light",
+            "x": 47.5,
+            "y": 15.63
+          },
+          {
+            "id": "room_6_lt_2",
+            "label": "Bedside Pendant",
+            "room_id": "room_6",
+            "type": "pendant_light",
+            "x": 43.7,
+            "y": 16.19
+          },
+          {
+            "id": "room_6_lt_3",
+            "label": "Bedside Pendant",
+            "room_id": "room_6",
+            "type": "pendant_light",
+            "x": 51.3,
+            "y": 16.19
+          }
+        ],
+        "plumbing": [],
+        "target_area": 213.93,
+        "type": "bedroom",
+        "width": 19,
+        "windows": [
+          {
+            "id": "room_6_win_1",
+            "wall": "north",
+            "width": 4,
+            "x": 47.5,
+            "y": 10
+          }
+        ],
+        "x": 38,
+        "y": 10
+      },
+      {
+        "area": 85.15,
+        "doors": [
+          {
+            "id": "room_7_door_1",
+            "wall": "south",
+            "width": 3,
+            "x": 8.52,
+            "y": 26.26
+          }
+        ],
+        "furniture": [
+          {
+            "height": 2.2,
+            "id": "room_7_fur_1",
+            "label": "Toilet",
+            "rotation": 0,
+            "type": "toilet",
+            "width": 1.8,
+            "x": 7.62,
+            "y": 21.86
+          },
+          {
+            "height": 2,
+            "id": "room_7_fur_2",
+            "label": "Washbasin",
+            "rotation": 0,
+            "type": "washbasin",
+            "width": 1.4,
+            "x": 14.43,
+            "y": 23.06
+          },
+          {
+            "height": 2.5,
+            "id": "room_7_fur_3",
+            "label": "Shower",
+            "rotation": 0,
+            "type": "shower",
+            "width": 2.5,
+            "x": 0.6,
+            "y": 22.51
+          }
+        ],
+        "height": 5,
+        "id": "room_7",
+        "label": "Bathroom 1",
+        "lighting": [
+          {
+            "id": "room_7_lt_1",
+            "label": "Bath Ceiling",
+            "room_id": "room_7",
+            "type": "ceiling_light",
+            "x": 8.52,
+            "y": 23.76
+          }
+        ],
+        "plumbing": [
+          {
+            "id": "room_7_pl_1",
+            "label": "Toilet",
+            "room_id": "room_7",
+            "type": "toilet",
+            "x": 14.83,
+            "y": 23.86
+          },
+          {
+            "id": "room_7_pl_2",
+            "label": "Washbasin",
+            "room_id": "room_7",
+            "type": "washbasin",
+            "x": 1.6,
+            "y": 22.86
+          },
+          {
+            "id": "room_7_pl_3",
+            "label": "Shower",
+            "room_id": "room_7",
+            "type": "shower",
+            "x": 1.6,
+            "y": 23.46
+          }
+        ],
+        "target_area": 66.85,
+        "type": "bathroom",
+        "width": 17.03,
+        "windows": [
+          {
+            "id": "room_7_win_1",
+            "wall": "north",
+            "width": 2,
+            "x": 8.52,
+            "y": 21.26
+          }
+        ],
+        "x": 0,
+        "y": 21.26
+      },
+      {
+        "area": 85.15,
+        "doors": [
+          {
+            "id": "room_8_door_1",
+            "wall": "south",
+            "width": 3,
+            "x": 25.55,
+            "y": 26.26
+          }
+        ],
+        "furniture": [
+          {
+            "height": 2.2,
+            "id": "room_8_fur_1",
+            "label": "Toilet",
+            "rotation": 0,
+            "type": "toilet",
+            "width": 1.8,
+            "x": 24.65,
+            "y": 21.86
+          },
+          {
+            "height": 2,
+            "id": "room_8_fur_2",
+            "label": "Washbasin",
+            "rotation": 0,
+            "type": "washbasin",
+            "width": 1.4,
+            "x": 31.46,
+            "y": 23.06
+          },
+          {
+            "height": 2.5,
+            "id": "room_8_fur_3",
+            "label": "Shower",
+            "rotation": 0,
+            "type": "shower",
+            "width": 2.5,
+            "x": 17.63,
+            "y": 22.51
+          }
+        ],
+        "height": 5,
+        "id": "room_8",
+        "label": "Bathroom 2",
+        "lighting": [
+          {
+            "id": "room_8_lt_1",
+            "label": "Bath Ceiling",
+            "room_id": "room_8",
+            "type": "ceiling_light",
+            "x": 25.55,
+            "y": 23.76
+          }
+        ],
+        "plumbing": [
+          {
+            "id": "room_8_pl_1",
+            "label": "Toilet",
+            "room_id": "room_8",
+            "type": "toilet",
+            "x": 31.86,
+            "y": 23.86
+          },
+          {
+            "id": "room_8_pl_2",
+            "label": "Washbasin",
+            "room_id": "room_8",
+            "type": "washbasin",
+            "x": 18.63,
+            "y": 22.86
+          },
+          {
+            "id": "room_8_pl_3",
+            "label": "Shower",
+            "room_id": "room_8",
+            "type": "shower",
+            "x": 18.63,
+            "y": 23.46
+          }
+        ],
+        "target_area": 66.85,
+        "type": "bathroom",
+        "width": 17.03,
+        "windows": [
+          {
+            "id": "room_8_win_1",
+            "wall": "north",
+            "width": 2,
+            "x": 25.55,
+            "y": 21.26
+          }
+        ],
+        "x": 17.03,
+        "y": 21.26
+      },
+      {
+        "area": 57.35,
+        "doors": [
+          {
+            "id": "room_9_door_1",
+            "wall": "south",
+            "width": 3,
+            "x": 39.8,
+            "y": 26.26
+          }
+        ],
+        "furniture": [
+          {
+            "height": 1.8,
+            "id": "room_9_fur_1",
+            "label": "Outdoor Chair",
+            "rotation": 0,
+            "type": "chair",
+            "width": 1.8,
+            "x": 38.9,
+            "y": 21.86
+          },
+          {
+            "height": 1.5,
+            "id": "room_9_fur_2",
+            "label": "Side Table",
+            "rotation": 0,
+            "type": "table_small",
+            "width": 1.5,
+            "x": 43.43,
+            "y": 23.01
+          }
+        ],
+        "height": 5,
+        "id": "room_9",
+        "label": "Balcony 1",
+        "lighting": [
+          {
+            "id": "room_9_lt_1",
+            "label": "Balcony Wall",
+            "room_id": "room_9",
+            "type": "wall_light",
+            "x": 39.8,
+            "y": 21.96
+          }
+        ],
+        "plumbing": [
+          {
+            "id": "room_9_pl_1",
+            "label": "Balcony Drain",
+            "room_id": "room_9",
+            "type": "drain",
+            "x": 39.8,
+            "y": 23.76
+          }
+        ],
+        "target_area": 40.11,
+        "type": "balcony",
+        "width": 11.47,
+        "windows": [],
+        "x": 34.06,
+        "y": 21.26
+      },
+      {
+        "area": 57.35,
+        "doors": [
+          {
+            "id": "room_10_door_1",
+            "wall": "south",
+            "width": 3,
+            "x": 51.27,
+            "y": 26.26
+          }
+        ],
+        "furniture": [
+          {
+            "height": 1.8,
+            "id": "room_10_fur_1",
+            "label": "Outdoor Chair",
+            "rotation": 0,
+            "type": "chair",
+            "width": 1.8,
+            "x": 50.37,
+            "y": 21.86
+          },
+          {
+            "height": 1.5,
+            "id": "room_10_fur_2",
+            "label": "Side Table",
+            "rotation": 0,
+            "type": "table_small",
+            "width": 1.5,
+            "x": 54.9,
+            "y": 23.01
+          }
+        ],
+        "height": 5,
+        "id": "room_10",
+        "label": "Balcony 2",
+        "lighting": [
+          {
+            "id": "room_10_lt_1",
+            "label": "Balcony Wall",
+            "room_id": "room_10",
+            "type": "wall_light",
+            "x": 51.27,
+            "y": 21.96
+          }
+        ],
+        "plumbing": [
+          {
+            "id": "room_10_pl_1",
+            "label": "Balcony Drain",
+            "room_id": "room_10",
+            "type": "drain",
+            "x": 51.27,
+            "y": 23.76
+          }
+        ],
+        "target_area": 40.11,
+        "type": "balcony",
+        "width": 11.47,
+        "windows": [],
+        "x": 45.53,
+        "y": 21.26
+      }
+    ],
+    "total_area": 1496.82,
+    "width": 57,
+    "windows": [
+      {
+        "id": "room_1_win_1",
+        "wall": "north",
+        "width": 4,
+        "x": 14.06,
+        "y": 0
+      },
+      {
+        "id": "room_3_win_1",
+        "wall": "north",
+        "width": 4,
+        "x": 49.43,
+        "y": 0
+      },
+      {
+        "id": "room_4_win_1",
+        "wall": "north",
+        "width": 4,
+        "x": 9.5,
+        "y": 10
+      },
+      {
+        "id": "room_5_win_1",
+        "wall": "north",
+        "width": 4,
+        "x": 28.5,
+        "y": 10
+      },
+      {
+        "id": "room_6_win_1",
+        "wall": "north",
+        "width": 4,
+        "x": 47.5,
+        "y": 10
+      },
+      {
+        "id": "room_7_win_1",
+        "wall": "north",
+        "width": 2,
+        "x": 8.52,
+        "y": 21.26
+      },
+      {
+        "id": "room_8_win_1",
+        "wall": "north",
+        "width": 2,
+        "x": 25.55,
+        "y": 21.26
+      }
+    ]
+  },
+  "parsed": {
+    "balconies": 2,
+    "bathrooms": 2,
+    "bedrooms": 3,
+    "dining_rooms": 1,
+    "explicit": {
+      "area": true,
+      "balcony": true,
+      "bathrooms": true,
+      "bedrooms": true,
+      "direction": true,
+      "kitchen_type": true
+    },
+    "floors": 1,
+    "inferred_defaults": {
+      "area": false,
+      "direction": false
+    },
+    "kitchen_type": "open",
+    "kitchens": 1,
+    "living_rooms": 1,
+    "main_entrance_direction": "north_east",
+    "original_text": "Design a modern single-floor 3BHK residential house\nwith a built-up area of approximately 1500 square feet.\n\nInclude three bedrooms, two bathrooms, two balconies,\na spacious living room, an open modular kitchen,\nand a dining area.\n\nPrioritize efficient room placement, natural lighting,\ncross-ventilation, practical circulation space,\nand a northeast-facing main entrance.\n\nGenerate a detailed 2D floorplan, an interactive\n3D digital twin, architectural validation results,\nand an estimated construction cost breakdown.",
+    "style": "modern",
+    "total_area_sqft": 1500,
+    "wants_furniture": true,
+    "wants_lighting": true,
+    "wants_plumbing": true,
+    "warnings": []
+  },
+  "room_schedule": [
+    {
+      "area": 281.2,
+      "height": 10,
+      "id": "room_1",
+      "label": "Living Room",
+      "type": "living_room",
+      "width": 28.12
+    },
+    {
+      "area": 137.5,
+      "height": 10,
+      "id": "room_2",
+      "label": "Dining Room",
+      "type": "dining_room",
+      "width": 13.75
+    },
+    {
+      "area": 151.3,
+      "height": 10,
+      "id": "room_3",
+      "label": "Kitchen",
+      "type": "kitchen",
+      "width": 15.13
+    },
+    {
+      "area": 213.94,
+      "height": 11.26,
+      "id": "room_4",
+      "label": "Bedroom 1",
+      "type": "bedroom",
+      "width": 19
+    },
+    {
+      "area": 213.94,
+      "height": 11.26,
+      "id": "room_5",
+      "label": "Bedroom 2",
+      "type": "bedroom",
+      "width": 19
+    },
+    {
+      "area": 213.94,
+      "height": 11.26,
+      "id": "room_6",
+      "label": "Bedroom 3",
+      "type": "bedroom",
+      "width": 19
+    },
+    {
+      "area": 85.15,
+      "height": 5,
+      "id": "room_7",
+      "label": "Bathroom 1",
+      "type": "bathroom",
+      "width": 17.03
+    },
+    {
+      "area": 85.15,
+      "height": 5,
+      "id": "room_8",
+      "label": "Bathroom 2",
+      "type": "bathroom",
+      "width": 17.03
+    },
+    {
+      "area": 57.35,
+      "height": 5,
+      "id": "room_9",
+      "label": "Balcony 1",
+      "type": "balcony",
+      "width": 11.47
+    },
+    {
+      "area": 57.35,
+      "height": 5,
+      "id": "room_10",
+      "label": "Balcony 2",
+      "type": "balcony",
+      "width": 11.47
+    }
+  ],
+  "summary": {
+    "built_up_area": 1500,
+    "orientation": {
+      "compass_label": "NORTH-EAST",
+      "entrance_wall": "top_right",
+      "height": 26.26,
+      "north_angle_deg": 45,
+      "note": "Top of 2D plan is NORTH (0°). Entrance on top_right wall per north_east facing.",
+      "requested_direction": "north_east",
+      "width": 57
+    },
+    "room_count": 10,
+    "style": "modern",
+    "total_area": 1496.82
+  }
+}

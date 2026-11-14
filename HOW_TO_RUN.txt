@@ -1,0 +1,19 @@
+IntelliTwin — How to Run (Fresh Environment)
+
+Prerequisites
+  Python 3.10+ and pip
+
+1. Create virtual environment
+
+ python3.11 -m venv .venv        
+source .venv/bin/activate          # macOS/Linux
+# or: .venv\Scripts\activate       # Windows PowerShell
+
+2. Install dependencies
+
+pip install --upgrade pip
+pip install -r requirements_updated.txt
+
+3. Start the backend (serves frontend too)
+
+python -m backend.app

@@ -1,0 +1,79 @@
+{
+    "model": {
+        "in_channels": 7,
+        "hidden_channels": 128,
+        "num_classes": 2,
+        "dropout": 0.3
+    },
+    "features": {
+        "node_features": [
+            "room_type",
+            "width_norm",
+            "height_norm",
+            "area_norm",
+            "aspect_ratio",
+            "cx",
+            "cy"
+        ],
+        "num_features": 7
+    },
+    "training": {
+        "epochs": 40,
+        "batch_size": 64,
+        "learning_rate": 0.001,
+        "weight_decay": 0.0001,
+        "scheduler_step": 10,
+        "scheduler_gamma": 0.5
+    },
+    "dataset": {
+        "total_graphs": 74995,
+        "balanced_graphs": 12044,
+        "train_size": 9635,
+        "val_size": 1204,
+        "test_size": 1205,
+        "class_0": "Partial",
+        "class_1": "Compliant"
+    },
+    "normalization": {
+        "feat_mean": [
+            4.083642482757568,
+            0.19493673741817474,
+            0.20356883108615875,
+            0.04773446545004845,
+            1.204942226409912,
+            0.5013821721076965,
+            0.48731157183647156
+        ],
+        "feat_std": [
+            3.2955000400543213,
+            0.09868292510509491,
+            0.13000744581222534,
+            0.05609355866909027,
+            0.8482915759086609,
+            0.1462736278772354,
+            0.18145738542079926
+        ]
+    },
+    "results": {
+        "best_val_accuracy": 0.9012,
+        "test_accuracy": 0.9046,
+        "test_loss": 0.2783,
+        "weighted_f1": 0.9001
+    },
+    "room_type_map": {
+        "0": "LivingRoom",
+        "1": "MasterRoom",
+        "2": "Kitchen",
+        "3": "Bathroom",
+        "4": "DiningRoom",
+        "5": "ChildRoom",
+        "6": "StudyRoom",
+        "7": "SecondRoom",
+        "8": "GuestRoom",
+        "9": "Balcony",
+        "10": "Entrance",
+        "11": "Storage",
+        "12": "Wall",
+        "13": "Exterior"
+    }
+}

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Studio — IntelliTwin</title>
+<meta name="description" content="Describe your home and generate a floorplan, 3D digital twin, validation and cost estimate.">
+<meta property="og:title" content="IntelliTwin Studio — Architectural Digital Twins">
+<meta property="og:description" content="Inspect generated homes, floorplans and four lighting atmospheres in IntelliTwin Studio.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "./js/vendor/three.module.js",
+  "three/addons/": "./js/vendor/addons/"
+} }
+</script>
+</head>
+<body class="studio">
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="i-logo" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7v9H3z"/><path d="M9 20v-6h6v6"/></symbol>
+  <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></symbol>
+  <symbol id="i-plan" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 12h9V3M12 12v9M16 12h5"/></symbol>
+  <symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="m3 7 9 5 9-5M12 12v10"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 0 1-4 0v-.1a1.6 1.6 0 0 0-2.6-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3.6 14H3a2 2 0 0 1 0-4h.1a1.6 1.6 0 0 0 1.2-2.6l-.1-.1A2 2 0 1 1 7 4.5l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 2.6 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-fit" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></symbol>
+  <symbol id="i-empty" viewBox="0 0 24 24"><path d="M4 4h4M12 4h4M20 4v4M20 12v4M20 20h-4M12 20H8M4 20v-4M4 12V8"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/></symbol>
+</svg>
+
+<header class="tb">
+  <button class="icon-btn" id="sideToggle" aria-label="Toggle requirements panel"><svg class="ico"><use href="#i-panel"/></svg></button>
+  <a href="index.html" class="brand" style="font-size:18px"><svg><use href="#i-logo"/></svg><span class="word">IntelliTwin</span></a>
+  <span class="sep"></span>
+  <div class="proj"><b id="projectName">Untitled residence</b><span id="projectSub">No generation yet</span></div>
+  <div class="seg" role="tablist">
+    <button class="active" data-view="plan" aria-label="2D Plan"><svg class="ico"><use href="#i-plan"/></svg><span class="lbl">2D Plan</span></button>
+    <button data-view="twin" aria-label="3D Twin"><svg class="ico"><use href="#i-cube"/></svg><span class="lbl">3D Twin</span></button>
+    <button data-view="report" aria-label="Report"><svg class="ico"><use href="#i-doc"/></svg><span class="lbl">Report</span></button>
+  </div>
+  <button class="pill loading" id="modelPill" title="Click to refresh">Checking model…</button>
+  <div class="dropdown">
+    <button class="btn btn-ghost btn-sm" id="exportBtn" disabled><svg class="ico"><use href="#i-down"/></svg><span class="lbl">Export</span></button>
+    <div class="menu" id="exportMenu" hidden>
+      <button data-export="png">Floorplan PNG</button>
+      <button data-export="json">Design JSON</button>
+      <button data-export="print">Print report</button>
+    </div>
+  </div>
+  <button class="icon-btn" id="settingsBtn" aria-label="Backend settings"><svg class="ico"><use href="#i-gear"/></svg></button>
+</header>
+
+<div class="body">
+  <aside class="side" id="side">
+    <div class="side-scroll">
+      <div>
+        <label class="eyebrow" for="reqInput">House requirements</label>
+        <textarea id="reqInput" class="req" placeholder="Describe your ideal home...
+
+Example: Design a modern 3BHK home with an east-facing entrance, a spacious living room, an open kitchen, three bedrooms, and natural cross-ventilation."></textarea>
+        <div class="presets">
+          <button data-preset="bhk3">3BHK · 1500 sqft</button>
+          <button data-preset="bhk2">2BHK · 1100 sqft</button>
+          <button data-preset="bhk4">4BHK villa</button>
+          <button data-preset="studio">1BHK compact</button>
+        </div>
+      </div>
+      <div class="parse" id="parsePreview" hidden></div>
+      <div>
+        <p class="eyebrow">Configuration</p>
+        <div class="fields">
+          <label class="field"><span>Bedrooms</span><input type="number" id="cfgBedrooms" min="1" max="6" value="3"></label>
+          <label class="field"><span>Bathrooms</span><input type="number" id="cfgBathrooms" min="1" max="6" value="2"></label>
+          <label class="field"><span>Balconies</span><input type="number" id="cfgBalconies" min="0" max="4" value="1"></label>
+          <label class="field"><span>Area (sqft)</span><input type="number" id="cfgArea" min="300" max="6000" step="50" value="1500"></label>
+          <label class="field"><span>Style</span><select id="cfgStyle"><option>modern</option><option>minimal</option><option>contemporary</option><option>traditional</option><option>luxury</option><option>classic</option></select></label>
+          <label class="field"><span>Kitchen</span><select id="cfgKitchen"><option>open</option><option>closed</option></select></label>
+          <label class="field"><span>Entrance</span><select id="cfgDirection"><option value="north">north</option><option value="north_east">north east</option><option value="east" selected>east</option><option value="south_east">south east</option><option value="south">south</option><option value="south_west">south west</option><option value="west">west</option><option value="north_west">north west</option></select></label>
+          <label class="field"><span>Floors</span><select id="cfgFloors"><option value="1">1</option></select></label>
+        </div>
+        <label class="field" style="margin-top:12px"><span>Cost rate profile</span><select id="rateProfile" style="text-transform:none"><option value="india_tier2_2025">india_tier2_2025</option></select></label>
+      </div>
+      <div class="alert" id="errorBox" role="alert" hidden></div>
+    </div>
+    <div class="side-foot">
+      <button class="btn btn-primary btn-block" id="generateBtn"><span class="spinner" hidden></span><svg class="ico gen-ico"><use href="#i-spark"/></svg><span class="btn-label">Generate Design</span></button>
+      <div class="row"><span class="mono">Ctrl/⌘ + Enter</span><button id="resetBtn" style="display:flex;gap:4px;align-items:center"><svg class="ico" style="width:12px;height:12px"><use href="#i-reset"/></svg>Reset</button></div>
+    </div>
+  </aside>
+
+  <main class="work">
+    <section class="panel" id="panel-plan">
+      <div class="vbar">
+        <button class="tgl" data-layer2d="furniture" aria-pressed="true">Furniture</button>
+        <button class="tgl" data-layer2d="lighting" aria-pressed="true">Lighting</button>
+        <button class="tgl" data-layer2d="plumbing" aria-pressed="true">Plumbing</button>
+        <button class="tgl" data-layer2d="dimensions" aria-pressed="true">Dimensions</button>
+        <div class="right">
+          <button class="icon-btn" id="zoomOut" aria-label="Zoom out"><svg class="ico"><use href="#i-minus"/></svg></button>
+          <span class="mono" id="zoomLbl" style="width:44px;text-align:center;font-size:11px">100%</span>
+          <button class="icon-btn" id="zoomIn" aria-label="Zoom in"><svg class="ico"><use href="#i-plus"/></svg></button>
+          <button class="icon-btn" id="zoomFit" aria-label="Fit to view" title="Fit to view"><svg class="ico"><use href="#i-fit"/></svg></button>
+        </div>
+      </div>
+      <div class="grid-bg" id="planContainer">
+        <div class="empty" id="planEmpty">
+          <div><svg class="ico"><use href="#i-empty"/></svg><h3>No design yet</h3><p>Describe your home on the left and press Generate Design.</p><button class="btn btn-ghost btn-sm" id="sampleBtn">Load a sample brief</button></div>
+        </div>
+        <svg id="planSvg" hidden></svg>
+        <div class="skeleton" id="planSkeleton" hidden></div>
+      </div>
+      <p class="status-line" id="planDims" hidden></p>
+    </section>
+
+    <section class="panel off" id="panel-twin">
+      <div class="vbar dark">
+        <button class="tgl" data-layer3d="walls" aria-pressed="true">Walls</button>
+        <button class="tgl" data-layer3d="furniture" aria-pressed="true">Furniture</button>
+        <button class="tgl" data-layer3d="lighting" aria-pressed="true">Markers</button>
+        <button class="tgl" data-layer3d="plumbing" aria-pressed="true">Plumbing</button>
+        <div class="right">
+          <button class="icon-btn" id="camReset" disabled aria-label="Fit / Reset" title="Fit / Reset"><svg class="ico"><use href="#i-fit"/></svg></button>
+          <button class="vbtn" id="cutawayBtn" aria-pressed="true" title="Inspect interiors without changing the design">Cutaway</button><button class="vbtn" id="camTop" disabled>Top view</button>
+        </div>
+      </div>
+      <div class="lighting-bar">
+        <span class="lighting-bar-label">Atmosphere</span>
+        <div class="lighting-mode-group" role="group" aria-label="Lighting atmosphere">
+          <button class="lighting-mode-btn" data-lighting-mode="morning" aria-pressed="true" title="Morning sunlight">Morning</button>
+          <button class="lighting-mode-btn" data-lighting-mode="neon" aria-pressed="false" title="Restrained colored accent lighting">Neon</button>
+          <button class="lighting-mode-btn" data-lighting-mode="evening" aria-pressed="false" title="Warm evening sunlight">Evening</button>
+          <button class="lighting-mode-btn" data-lighting-mode="night" aria-pressed="false" title="Night with warm indoor lighting">Night</button>
+        </div>
+      </div>
+      <div id="threeContainer">
+        <canvas id="threeCanvas" aria-label="Interactive 3D house"></canvas><p class="room3d-badge" id="room3DBadge" hidden></p>
+        <div class="empty dark" id="twinEmpty"><div><svg class="ico"><use href="#i-cube"/></svg><p style="margin-top:12px">Generate a design to build its digital twin.</p></div></div>
+        <p class="twin-hint" id="twinBadge" hidden></p>
+      </div>
+    </section>
+
+    <section class="report" id="panel-report" hidden>
+      <div class="report-inner" id="reportGrid"></div>
+    </section>
+  </main>
+
+  <aside class="insp" id="inspector" hidden></aside>
+</div>
+
+<footer class="foot"><span id="footGen">Idle — ready</span><span id="footWarn"></span></footer>
+
+<div class="modal" id="settingsModal" hidden>
+  <div class="modal-card">
+    <h3>Backend connection</h3>
+    <p class="muted" style="margin-top:8px">Address of your IntelliTwin server. Leave empty when this studio is served by the same server (calls go to <span class="mono">/api/…</span>).</p>
+    <input id="apiBaseInput" placeholder="http://localhost:8000">
+    <div class="row"><button class="btn btn-ghost btn-sm" id="settingsCancel">Cancel</button><button class="btn btn-primary btn-sm" id="settingsSave">Save &amp; reconnect</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="js/api.js"></script>
+<script src="js/viewer2d.js"></script>
+<script type="module" src="js/viewer3d.js"></script>
+<script src="js/studio.js"></script>
+</body>
+</html>
